@@ -1,2 +1,3 @@
-# chottu-chat
-Simple real-time chat website built with Flask
+flask
+flask-socketio
+eventlet
