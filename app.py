@@ -10,11 +10,12 @@ socketio = SocketIO(app, cors_allowed_origins="*")
 @app.route("/")
 def home():
     return """
-    <h2>🔥 Real Time Chat</h2>
-    <input id="msg" placeholder="Type message">
-    <button onclick="sendMsg()">Send</button>
+    <h2>Real Time Chat</h2>
 
     <ul id="messages"></ul>
+
+    <input id="msg" placeholder="Type message">
+    <button onclick="sendMsg()">Send</button>
 
     <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
     <script>
@@ -34,8 +35,8 @@ def home():
     </script>
     """
 
-@socketio.on('message')
-def handleMessage(msg):
+@socketio.on("message")
+def handle_message(msg):
     send(msg, broadcast=True)
 
 if __name__ == "__main__":
