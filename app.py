@@ -14,7 +14,7 @@ def home():
     <!doctype html>
     <html>
     <head>
-        <title>Chat App</title>
+        <meta name="google-site-verification" content="Id_QRVjzfFcjclv-5sEL_v2HgTwFwfzvKo3n9v5r2NY" />
     </head>
     <body>
         <h2>🔥 Real Time Chat</h2>
