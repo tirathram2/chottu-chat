@@ -1,6 +1,7 @@
 from flask import Flask, render_template, redirect, url_for
 from flask_socketio import SocketIO, send
 import os
+import sqlite3
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "secret"
