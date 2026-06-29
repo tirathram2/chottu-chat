@@ -5,20 +5,41 @@ import os
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "secret"
 
-socketio = SocketIO(app, cors_allowed_origins="*", async_mode="eventlet")
-@app.route("/login")
-def login():
-    return render_template("login.html")
-    @app.route("/signup")
-def signup():
-    return render_template("signup.html")
+socketio = SocketIO(
+    app,
+    cors_allowed_origins="*",
+    async_mode="eventlet"
+)
+
+# Home Page
 @app.route("/")
 def home():
     return render_template("index.html")
 
+
+# Login Page
+@app.route("/login")
+def login():
+    return render_template("login.html")
+
+
+# Signup Page
+@app.route("/signup")
+def signup():
+    return render_template("signup.html")
+
+
+# Optional Redirect
+@app.route("/chat")
+def chat():
+    return redirect(url_for("home"))
+
+
+# Chat Message
 @socketio.on("message")
 def handle_message(msg):
     send(msg, broadcast=True)
+
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))
