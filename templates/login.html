@@ -1,21 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Chottu Chat</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
 
-<h1>🔐 Login</h1>
+<div class="login-container">
+    <h1>🔥 Chottu Chat</h1>
+    <h2>Login</h2>
 
-<form>
-    <input type="text" placeholder="Username"><br><br>
-    <input type="password" placeholder="Password"><br><br>
-    <button type="submit">Login</button>
-</form>
+    <input type="text" placeholder="Username">
 
-<br>
+    <input type="password" placeholder="Password">
 
-<a href="/">⬅ Back to Chat</a>
+    <button>Login</button>
+
+    <p>
+        Don't have an account?
+        <a href="/signup">Sign Up</a>
+    </p>
+</div>
 
 </body>
 </html>
