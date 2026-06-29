@@ -62,7 +62,6 @@ password = request.form["password"]
     return redirect(url_for("login"))
 
 return render_template("signup.html")
-
 # Optional Redirect
 @app.route("/chat")
 def chat():
