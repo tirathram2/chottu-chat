@@ -1,87 +1,21 @@
-<!DOCTYPE html>
-<html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Login - Chottu Chat</title>
-
-<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-
-<style>
-body{
-    background:#111b21;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    height:100vh;
-}
-
-.login-box{
-    width:350px;
-    background:#202c33;
-    padding:30px;
-    border-radius:15px;
-    text-align:center;
-}
-
-.login-box h2{
-    color:white;
-    margin-bottom:20px;
-}
-
-.login-box input{
-    width:100%;
-    padding:12px;
-    margin:10px 0;
-    border:none;
-    border-radius:8px;
-    background:#2a3942;
-    color:white;
-}
-
-.login-box button{
-    width:100%;
-    padding:12px;
-    margin-top:15px;
-    border:none;
-    border-radius:8px;
-    background:#00a884;
-    color:white;
-    font-size:16px;
-    cursor:pointer;
-}
-
-.login-box button:hover{
-    background:#06cf9c;
-}
-
-.login-box a{
-    color:#53bdeb;
-    text-decoration:none;
-}
-</style>
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Chottu Chat</title>
 </head>
 <body>
 
-<div class="login-box">
-
-<h2>🔥 Chottu Chat Login</h2>
+<h1>🔐 Login</h1>
 
 <form>
-<input type="text" placeholder="Username">
-
-<input type="password" placeholder="Password">
-
-<button>Login</button>
-
+    <input type="text" placeholder="Username"><br><br>
+    <input type="password" placeholder="Password"><br><br>
+    <button type="submit">Login</button>
 </form>
 
 <br>
 
-<a href="#">Create New Account</a>
-
-</div>
+<a href="/">⬅ Back to Chat</a>
 
 </body>
 </html>
