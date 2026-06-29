@@ -5,6 +5,7 @@ import sqlite3
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "secret"
+DATABASE = "users.db"
 
 socketio = SocketIO(
     app,
