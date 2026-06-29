@@ -6,6 +6,21 @@ import sqlite3
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "secret"
 DATABASE = "users.db"
+def init_db():
+    conn = sqlite3.connect(DATABASE)
+    cursor = conn.cursor()
+
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS users (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        username TEXT UNIQUE NOT NULL,
+        email TEXT UNIQUE NOT NULL,
+        password TEXT NOT NULL
+    )
+    """)
+
+    conn.commit()
+    conn.close()
 
 socketio = SocketIO(
     app,
