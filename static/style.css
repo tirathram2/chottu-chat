@@ -174,3 +174,53 @@ body{
         width:100%;
     }
 }
+.login-container{
+width:400px;
+margin:80px auto;
+background:#202c33;
+padding:30px;
+border-radius:15px;
+text-align;
+box-shadow:0 0 20px rgba(0,0,0,.4);
+}
+
+.login-container h1,
+.login-container h2{
+color:#fff;
+margin-bottom:20px;
+}
+
+.login-container input{
+width:100%;
+padding:12px;
+margin:10px 0;
+border;
+border-radius:8px;
+background:#2a3942;
+color:#fff;
+font-size:16px;
+}
+
+.login-container button{
+width:100%;
+padding:12px;
+margin-top:15px;
+background:#00a884;
+color:#fff;
+border;
+border-radius:8px;
+cursor;
+font-size:16px;
+}
+
+.login-container button
+
+.login-container p{
+margin-top:15px;
+color:#ccc;
+}
+
+.login-container a{
+color:#00a884;
+text-decoration;
+}
