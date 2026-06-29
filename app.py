@@ -41,10 +41,27 @@ def login():
 
 
 # Signup Page
-@app.route("/signup")
+@app.route("/signup", methods=["GET", "POST"])
 def signup():
-    return render_template("signup.html")
+if request.method == "POST":
+username = request.form["username"]
+email = request.form["email"]
+password = request.form["password"]
 
+    conn = sqlite3.connect(DATABASE)
+    cursor = conn.cursor()
+
+    cursor.execute(
+        "INSERT INTO users (username, email, password) VALUES (?, ?, ?)",
+        (username, email, password)
+    )
+
+    conn.commit()
+    conn.close()
+
+    return redirect(url_for("login"))
+
+return render_template("signup.html")
 
 # Optional Redirect
 @app.route("/chat")
