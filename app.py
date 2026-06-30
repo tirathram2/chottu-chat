@@ -3,7 +3,7 @@ from flask_socketio import SocketIO, send
 import sqlite3
 import os
 
-app = Flask(name)
+app = Flask(__name__)
 app.config["SECRET_KEY"] = "secret"
 
 DATABASE = "users.db"
@@ -25,14 +25,14 @@ def init_db():
     conn.close()
 
 socketio = SocketIO(
-app,
-cors_allowed_origins="*",
-async_mode="eventlet"
+    app,
+    cors_allowed_origins="*",
+    async_mode="eventlet"
 )
 
 @app.route("/")
 def home():
-return render_template("index.html")
+    return render_template("index.html")
 
 @app.route("/login")
 def login():
@@ -40,7 +40,7 @@ return render_template("login.html")
 
 @app.route("/signup", methods=["GET", "POST"])
 def signup():
-if request.method == "POST":
+    if request.method == "POST":
 username = request.form["username"]
 email = request.form["email"]
 password = request.form["password"]
@@ -68,7 +68,7 @@ return redirect(url_for("home"))
 def handle_message(msg):
 send(msg, broadcast=True)
 
-if name == "main":
+if __name__ == "__main__":
 init_db()
 port = int(os.environ.get("PORT", 10000))
 socketio.run(app, host="0.0.0.0", port=port)
