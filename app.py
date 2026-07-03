@@ -84,7 +84,7 @@ if __name__ == "__main__":
     init_db()
     port = int(os.environ.get("PORT", 10000))
     socketio.run(app, host="0.0.0.0", port=port)
-=======
+
 from flask import Flask, render_template, request, redirect, url_for
 from flask_socketio import SocketIO, send
 import sqlite3
