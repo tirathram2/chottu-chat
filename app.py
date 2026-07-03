@@ -1,3 +1,4 @@
+
 from flask import Flask, render_template, request, redirect, url_for
 from flask_socketio import SocketIO, send
 import sqlite3
@@ -83,3 +84,90 @@ if __name__ == "__main__":
     init_db()
     port = int(os.environ.get("PORT", 10000))
     socketio.run(app, host="0.0.0.0", port=port)
+=======
+from flask import Flask, render_template, request, redirect, url_for
+from flask_socketio import SocketIO, send
+import sqlite3
+import os
+
+app = Flask(__name__)
+app.config["SECRET_KEY"] = "secret"
+
+DATABASE = "users.db"
+
+
+def init_db():
+    conn = sqlite3.connect(DATABASE)
+    cursor = conn.cursor()
+
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS users (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        username TEXT UNIQUE NOT NULL,
+        email TEXT UNIQUE NOT NULL,
+        password TEXT NOT NULL
+    )
+    """)
+
+    conn.commit()
+    conn.close()
+
+
+socketio = SocketIO(app, cors_allowed_origins="*")
+
+
+@app.route("/")
+def home():
+    return render_template("index.html")
+
+
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    if request.method == "POST":
+        return redirect(url_for("chat"))
+
+    return render_template("login.html")
+
+
+@app.route("/signup", methods=["GET", "POST"])
+def signup():
+    if request.method == "POST":
+        username = request.form["username"]
+        email = request.form["email"]
+        password = request.form["password"]
+
+        conn = sqlite3.connect(DATABASE)
+        cursor = conn.cursor()
+
+        try:
+            cursor.execute(
+                "INSERT INTO users (username, email, password) VALUES (?, ?, ?)",
+                (username, email, password)
+            )
+            conn.commit()
+
+        except sqlite3.IntegrityError:
+            conn.close()
+            return "This email or username is already registered."
+
+        conn.close()
+        return redirect(url_for("login"))
+
+    return render_template("signup.html")
+
+
+@app.route("/chat")
+def chat():
+    return render_template("index.html")
+
+
+@socketio.on("message")
+def handle_message(msg):
+    send(msg, broadcast=True)
+
+
+if __name__ == "__main__":
+    init_db()
+    port = int(os.environ.get("PORT", 10000))
+    socketio.run(app, host="0.0.0.0", port=port)
+
