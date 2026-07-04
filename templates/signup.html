@@ -1,48 +1,31 @@
 <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - Chottu Chat</title>
+</head>
+<body>
 
-<<<<<<< HEAD
-<html> <head> <title>Sign Up</title> </head> <body>
+<h1>🔥 Chottu Chat</h1>
+<h2>Create Account</h2>
 
-<h1>🔥 Chottu Chat</h1> <h2>Create Account</h2>
+<form action="/signup" method="POST">
+    <input type="text" name="username" placeholder="Username" required>
+    <br><br>
 
-<form action="/signup" method="POST"> <input type="text" name="username" placeholder="Username" required><br><br>
+    <input type="email" name="email" placeholder="Email" required>
+    <br><br>
 
-<input type="email" name="email" placeholder="Email" required><br><br>
+    <input type="password" name="password" placeholder="Password" required>
+    <br><br>
 
-<input type="password" name="password" placeholder="Password" required><br><br>
-
-<button type="submit">Create Account</button>
-
+    <button type="submit">Create Account</button>
 </form>
 
 <br>
 
 <a href="/login">Already have an account? Login</a>
 
-</body> </html>
-=======
-<html lang="en"> <head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>Sign Up - Chottu Chat</title> <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"> </head> <body>
-
-<div class="login-container"> <h1>🔥 Chottu Chat</h1> <h2>Create Account</h2>
-
-<form action="/signup" method="POST">
-
-    <input type="text" name="username" placeholder="Username" required>
-
-    <input type="email" name="email" placeholder="Email" required>
-
-    <input type="password" name="password" placeholder="Password" required>
-
-    <button type="submit">Create Account</button>
-
-</form>
-
-<p>
-    Already have an account?
-    <a href="/login">Login</a>
-</p>
-
-</div>
-
-</body> </html>
->>>>>>> 14cae4e195da0c84c4ced97d32b223c4824c984c
+</body>
+</html>
