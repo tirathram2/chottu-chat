@@ -58,11 +58,10 @@ def login():
             )
             conn.commit()
             conn.close()
+
             return redirect(url_for("chat"))
 
         conn.close()
-<<<<<<< HEAD
-=======
         return "Invalid username or password"
 
     return render_template("login.html")
@@ -90,7 +89,6 @@ def signup():
             return "This email or username is already registered."
 
         conn.close()
->>>>>>> d6e18af9097116c37d6ca12e2a55b85da1232235
         return redirect(url_for("login"))
 
     return render_template("signup.html")
@@ -109,7 +107,6 @@ def handle_message(msg):
 if __name__ == "__main__":
     init_db()
     port = int(os.environ.get("PORT", 10000))
-<<<<<<< HEAD
     socketio.run(app, host="0.0.0.0", port=port)
 =======
     socketio.run(app, host="0.0.0.0", port=port)
