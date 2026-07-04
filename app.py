@@ -38,7 +38,30 @@ def home():
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
-        return redirect(url_for("chat"))
+        username = request.form["username"]
+        password = request.form["password"]
+
+        conn = sqlite3.connect(DATABASE)
+        cursor = conn.cursor()
+
+        cursor.execute(
+            "SELECT * FROM users WHERE username=? AND password=?",
+            (username, password)
+        )
+
+        user = cursor.fetchone()
+
+        if user:
+            cursor.execute(
+                "UPDATE users SET online=1 WHERE username=?",
+                (username,)
+            )
+            conn.commit()
+            conn.close()
+            return redirect(url_for("chat"))
+
+        conn.close()
+        return "Invalid username or password"
 
     return render_template("login.html")
 
