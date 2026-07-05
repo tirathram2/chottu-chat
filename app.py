@@ -1,12 +1,12 @@
 
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, session
 from flask_socketio import SocketIO, send
 import sqlite3
 import os
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "secret"
-
+app.config["PERMANENT_SESSION_LIFETIME"] = 86400
 DATABASE = "users.db"
 
 
@@ -59,7 +59,7 @@ def login():
             )
             conn.commit()
             conn.close()
-
+session["username"] = username
             return redirect(url_for("chat"))
 
         conn.close()
@@ -97,9 +97,15 @@ def signup():
 
 @app.route("/chat")
 def chat():
-    return render_template("index.html")
+    if "username" not in session:
+        return redirect(url_for("login"))
 
+    return render_template("index.html", username=session["username"])
 
+@app.route("/logout")
+def logout():
+    session.clear()
+    return redirect(url_for("login"))
 @socketio.on("message")
 def handle_message(msg):
     send(msg, broadcast=True)
