@@ -52,15 +52,17 @@ def login():
 
         user = cursor.fetchone()
 
-        if user:
-            cursor.execute(
-                "UPDATE users SET online=1 WHERE username=?",
-                (username,)
-            )
-            conn.commit()
-            conn.close()
-session["username"] = username
-            return redirect(url_for("chat"))
+       if user:
+    cursor.execute(
+        "UPDATE users SET online=1 WHERE username=?",
+        (username,)
+    )
+    conn.commit()
+    conn.close()
+
+    session["username"] = username
+
+    return redirect(url_for("chat"))
 
         conn.close()
         return "Invalid username or password"
@@ -115,5 +117,4 @@ if __name__ == "__main__":
     init_db()
     port = int(os.environ.get("PORT", 10000))
     socketio.run(app, host="0.0.0.0", port=port)
-socketio.run(app, host="0.0.0.0", port=port)
 
