@@ -52,23 +52,22 @@ def login():
 
         user = cursor.fetchone()
 
-       if user:
-    cursor.execute(
-        "UPDATE users SET online=1 WHERE username=?",
-        (username,)
-    )
-    conn.commit()
-    conn.close()
+        if user:
+            cursor.execute(
+                "UPDATE users SET online=1 WHERE username=?",
+                (username,)
+            )
+            conn.commit()
+            conn.close()
 
-    session["username"] = username
+            session["username"] = username
 
-    return redirect(url_for("chat"))
+            return redirect(url_for("chat"))
 
         conn.close()
         return "Invalid username or password"
 
     return render_template("login.html")
-
 
 @app.route("/signup", methods=["GET", "POST"])
 def signup():
