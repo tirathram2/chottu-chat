@@ -13,7 +13,15 @@ DATABASE = "users.db"
 def init_db():
     conn = sqlite3.connect(DATABASE)
     cursor = conn.cursor()
-
+cursor.execute("""
+CREATE TABLE IF NOT EXISTS messages (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    sender TEXT NOT NULL,
+    receiver TEXT NOT NULL,
+    message TEXT NOT NULL,
+    time TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+)
+""")
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS users (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
