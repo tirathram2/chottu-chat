@@ -21,3 +21,22 @@ document.getElementById("voiceCallBtn").addEventListener("click", () => {
 document.getElementById("videoCallBtn").addEventListener("click", () => {
     alert("🎥 Video Call feature is coming soon...");
 });
+socket.on("incoming-call", (data) => {
+    alert("📞 Incoming Call from: " + data.from);
+});
+
+socket.on("call-answered", () => {
+    alert("✅ Call Accepted");
+});
+
+document.getElementById("voiceCallBtn").onclick = () => {
+    socket.emit("call-user", {
+        from: "User"
+    });
+};
+
+document.getElementById("videoCallBtn").onclick = () => {
+    socket.emit("call-user", {
+        from: "User (Video)"
+    });
+};
