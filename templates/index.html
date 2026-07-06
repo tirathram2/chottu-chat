@@ -36,13 +36,22 @@
 
     <div class="chat-area">
 
-        <div class="chat-header">
-            <img src="https://i.imgur.com/6VBx3io.png">
-            <div>
-                <h3>Global Chat</h3>
-                <small>Online</small>
-            </div>
-        </div>
+       <div class="chat-header">
+
+    <img src="https://i.imgur.com/6VBx3io.png">
+
+    <div>
+        <h3>Global Chat</h3>
+        <small>Online</small>
+    </div>
+
+    <div style="margin-left:auto;display:flex;gap:10px;">
+        <button id="voiceCallBtn">📞</button>
+        <button id="videoCallBtn">🎥</button>
+        <button id="logoutBtn" onclick="window.location='/logout'">🚪</button>
+    </div>
+
+</div>
 
         <ul id="messages"></ul>
 
