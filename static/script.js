@@ -14,3 +14,10 @@ function sendMsg() {
         input.value = "";
     }
 }
+document.getElementById("voiceCallBtn").addEventListener("click", () => {
+    alert("📞 Voice Call feature is coming soon...");
+});
+
+document.getElementById("videoCallBtn").addEventListener("click", () => {
+    alert("🎥 Video Call feature is coming soon...");
+});
