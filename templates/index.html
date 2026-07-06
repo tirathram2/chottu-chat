@@ -63,7 +63,23 @@
     </div>
 
 </div>
+<div id="callWindow" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:#111;z-index:9999;">
 
+    <video id="localVideo" autoplay muted playsinline
+        style="width:220px;position:absolute;top:10px;right:10px;border-radius:10px;">
+    </video>
+
+    <video id="remoteVideo" autoplay playsinline
+        style="width:100%;height:100%;object-fit:cover;">
+    </video>
+
+    <div style="position:absolute;bottom:20px;width:100%;text-align:center;">
+        <button id="muteBtn">🔇 Mute</button>
+        <button id="cameraBtn">📷 Camera</button>
+        <button id="endCallBtn">❌ End Call</button>
+    </div>
+
+</div>
 <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
 <script src="{{ url_for('static', filename='script.js') }}"></script>
 
