@@ -40,3 +40,37 @@ document.getElementById("videoCallBtn").onclick = () => {
         from: "User (Video)"
     });
 };
+let localStream = null;
+
+async function startLocalMedia(video = true) {
+    try {
+        localStream = await navigator.mediaDevices.getUserMedia({
+            video: video,
+            audio: true
+        });
+
+        document.getElementById("callWindow").style.display = "block";
+        document.getElementById("localVideo").srcObject = localStream;
+
+    } catch (err) {
+        alert("Camera/Microphone permission denied.");
+        console.error(err);
+    }
+}
+
+document.getElementById("voiceCallBtn").addEventListener("click", async () => {
+    await startLocalMedia(false);
+});
+
+document.getElementById("videoCallBtn").addEventListener("click", async () => {
+    await startLocalMedia(true);
+});
+
+document.getElementById("endCallBtn").addEventListener("click", () => {
+
+    if (localStream) {
+        localStream.getTracks().forEach(track => track.stop());
+    }
+
+    document.getElementById("callWindow").style.display = "none";
+});
