@@ -110,7 +110,19 @@ def logout():
 @socketio.on("message")
 def handle_message(msg):
     send(msg, broadcast=True)
+@socketio.on("call-user")
+def call_user(data):
+    socketio.emit("incoming-call", data, broadcast=True)
 
+
+@socketio.on("answer-call")
+def answer_call(data):
+    socketio.emit("call-answered", data, broadcast=True)
+
+
+@socketio.on("ice-candidate")
+def ice_candidate(data):
+    socketio.emit("ice-candidate", data, broadcast=True)
 
 if __name__ == "__main__":
     init_db()
