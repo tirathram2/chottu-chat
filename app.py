@@ -116,6 +116,25 @@ def chat():
 def logout():
     session.clear()
     return redirect(url_for("login"))
+@app.route("/users")
+def users():
+    conn = sqlite3.connect(DATABASE)
+    cursor = conn.cursor()
+
+    cursor.execute(
+        "SELECT username, online FROM users WHERE username != ?",
+        (session["username"],)
+    )
+
+    users = cursor.fetchall()
+    conn.close()
+
+    return {
+        "users": [
+            {"username": u[0], "online": u[1]}
+            for u in users
+        ]
+    }    
 @socketio.on("message")
 def handle_message(msg):
     send(msg, broadcast=True)
