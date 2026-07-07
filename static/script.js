@@ -74,3 +74,31 @@ document.getElementById("endCallBtn").addEventListener("click", () => {
 
     document.getElementById("callWindow").style.display = "none";
 });
+async function loadUsers() {
+
+    const response = await fetch("/users");
+    const data = await response.json();
+
+    const userList = document.getElementById("userList");
+
+    data.users.forEach(user => {
+
+        const div = document.createElement("div");
+
+        div.className = "chat-item";
+
+        div.innerHTML = `
+            <img src="https://i.imgur.com/6VBx3io.png">
+            <div>
+                <h4>${user.username}</h4>
+                <p>${user.online ? "🟢 Online" : "⚪ Offline"}</p>
+            </div>
+        `;
+
+        userList.appendChild(div);
+
+    });
+
+}
+
+loadUsers();
