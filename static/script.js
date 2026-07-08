@@ -143,3 +143,6 @@ socket.on("refresh-users", () => {
     loadUsers();
 
 });
+socket.on("seen", function(data) {
+    console.log(data.from + " has seen your message");
+});
