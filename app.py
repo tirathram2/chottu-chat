@@ -141,7 +141,29 @@ def handle_message(msg):
 @socketio.on("call-user")
 def call_user(data):
     socketio.emit("incoming-call", data, broadcast=True)
+@socketio.on("private-message")
+def private_message(data):
 
+    conn = sqlite3.connect(DATABASE)
+    cursor = conn.cursor()
+
+    cursor.execute(
+        "INSERT INTO messages (sender, receiver, message) VALUES (?, ?, ?)",
+        (
+            session["username"],
+            data["to"],
+            data["message"]
+        )
+    )
+
+    conn.commit()
+    conn.close()
+
+    socketio.emit("private-message", {
+        "from": session["username"],
+        "to": data["to"],
+        "message": data["message"]
+    })
 
 @socketio.on("answer-call")
 def answer_call(data):
