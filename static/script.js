@@ -102,3 +102,18 @@ async function loadUsers() {
 }
 
 loadUsers();
+socket.on("private-message", function(data) {
+
+    if (
+        data.from === selectedUser ||
+        data.to === selectedUser
+    ) {
+
+        var li = document.createElement("li");
+
+        li.innerText = data.from + ": " + data.message;
+
+        document.getElementById("messages").appendChild(li);
+    }
+
+});
