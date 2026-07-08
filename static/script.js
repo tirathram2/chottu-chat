@@ -117,3 +117,22 @@ socket.on("private-message", function(data) {
     }
 
 });
+async function loadMessages(username) {
+
+    const response = await fetch("/messages/" + username);
+    const data = await response.json();
+
+    const messages = document.getElementById("messages");
+    messages.innerHTML = "";
+
+    data.messages.forEach(msg => {
+
+        const li = document.createElement("li");
+
+        li.innerText = msg.sender + ": " + msg.message;
+
+        messages.appendChild(li);
+
+    });
+
+}
