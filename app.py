@@ -134,6 +134,43 @@ def users():
             {"username": u[0], "online": u[1]}
             for u in users
         ]
+    } 
+@app.route("/messages/<username>")
+def get_messages(username):
+
+    if "username" not in session:
+        return {"messages": []}
+
+    conn = sqlite3.connect(DATABASE)
+    cursor = conn.cursor()
+
+    cursor.execute("""
+    SELECT sender, receiver, message
+    FROM messages
+    WHERE
+        (sender=? AND receiver=?)
+        OR
+        (sender=? AND receiver=?)
+    ORDER BY id
+    """, (
+        session["username"],
+        username,
+        username,
+        session["username"]
+    ))
+
+    rows = cursor.fetchall()
+    conn.close()
+
+    return {
+        "messages": [
+            {
+                "sender": row[0],
+                "receiver": row[1],
+                "message": row[2]
+            }
+            for row in rows
+        ]
     }    
 @socketio.on("message")
 def handle_message(msg):
