@@ -201,7 +201,36 @@ def private_message(data):
         "to": data["to"],
         "message": data["message"]
     })
+@socketio.on("user-online")
+def user_online(username):
 
+    conn = sqlite3.connect(DATABASE)
+    cursor = conn.cursor()
+
+    cursor.execute(
+        "UPDATE users SET online=1 WHERE username=?",
+        (username,)
+    )
+
+    conn.commit()
+    conn.close()
+
+    socketio.emit("refresh-users")
+ @socketio.on("user-offline")
+def user_offline(username):
+
+    conn = sqlite3.connect(DATABASE)
+    cursor = conn.cursor()
+
+    cursor.execute(
+        "UPDATE users SET online=0 WHERE username=?",
+        (username,)
+    )
+
+    conn.commit()
+    conn.close()
+
+    socketio.emit("refresh-users")   
 @socketio.on("answer-call")
 def answer_call(data):
     socketio.emit("call-answered", data, broadcast=True)
