@@ -216,7 +216,9 @@ def user_online(username):
     conn.close()
 
     socketio.emit("refresh-users")
- @socketio.on("user-offline")
+
+
+@socketio.on("user-offline")
 def user_offline(username):
 
     conn = sqlite3.connect(DATABASE)
@@ -230,7 +232,9 @@ def user_offline(username):
     conn.commit()
     conn.close()
 
-    socketio.emit("refresh-users")   
+    socketio.emit("refresh-users")
+
+
 @socketio.on("answer-call")
 def answer_call(data):
     socketio.emit("call-answered", data, broadcast=True)
@@ -239,6 +243,7 @@ def answer_call(data):
 @socketio.on("ice-candidate")
 def ice_candidate(data):
     socketio.emit("ice-candidate", data, broadcast=True)
+
 
 if __name__ == "__main__":
     init_db()
