@@ -136,3 +136,10 @@ async function loadMessages(username) {
     });
 
 }
+socket.on("refresh-users", () => {
+
+    document.getElementById("userList").innerHTML = "";
+
+    loadUsers();
+
+});
