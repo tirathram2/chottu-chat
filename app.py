@@ -174,11 +174,10 @@ def get_messages(username):
         ]
     }    
 @socketio.on("message")
-def handle_message(msg):
-
+def handle_message(data):
     socketio.emit("message", {
-        "sender": session["username"],
-        "message": msg
+        "sender": data["sender"],
+        "message": data["message"]
     }, broadcast=True)
 @socketio.on("call-user")
 def call_user(data):
