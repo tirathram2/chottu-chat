@@ -55,11 +55,20 @@
 
         </div>
 
-        <ul id="messages"></ul>
-<div id="typing" style="padding:5px 15px;color:gray;font-size:13px;"></div>
-        <div class="typing">
-            <span id="typing"></span>
-        </div>
+    <ul id="messages"></ul>
+
+<div id="typing" class="typing"></div>
+
+<div class="chat-input">
+
+    <input
+        id="msg"
+        placeholder="Type a message..."
+    >
+
+    <button onclick="sendMsg()">➤</button>
+
+</div>
 
         <div class="chat-input">
 
