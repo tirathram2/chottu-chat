@@ -24,16 +24,16 @@ def init_db():
     )
     """)
 
-   cursor.execute("""
-CREATE TABLE IF NOT EXISTS messages (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    sender TEXT NOT NULL,
-    receiver TEXT NOT NULL,
-    message TEXT NOT NULL,
-    time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    seen INTEGER DEFAULT 0
-)
-""")
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS messages (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        sender TEXT NOT NULL,
+        receiver TEXT NOT NULL,
+        message TEXT NOT NULL,
+        time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        seen INTEGER DEFAULT 0
+    )
+    """)
 
     conn.commit()
     conn.close()
