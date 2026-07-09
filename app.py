@@ -175,13 +175,11 @@ def get_messages(username):
     }    
 @socketio.on("message")
 def handle_message(data):
+
     socketio.emit("message", {
         "sender": data["sender"],
         "message": data["message"]
     }, broadcast=True)
-@socketio.on("call-user")
-def call_user(data):
-    socketio.emit("incoming-call", data, broadcast=True)
 @socketio.on("private-message")
 def private_message(data):
 
