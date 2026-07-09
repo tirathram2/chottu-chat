@@ -175,7 +175,11 @@ def get_messages(username):
     }    
 @socketio.on("message")
 def handle_message(msg):
-    send(msg, broadcast=True)
+
+    socketio.emit("message", {
+        "sender": session["username"],
+        "message": msg
+    }, broadcast=True)
 @socketio.on("call-user")
 def call_user(data):
     socketio.emit("incoming-call", data, broadcast=True)
