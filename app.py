@@ -24,15 +24,16 @@ def init_db():
     )
     """)
 
-    cursor.execute("""
-    CREATE TABLE IF NOT EXISTS messages (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        sender TEXT NOT NULL,
-        receiver TEXT NOT NULL,
-        message TEXT NOT NULL,
-        time TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    )
-    """)
+   cursor.execute("""
+CREATE TABLE IF NOT EXISTS messages (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    sender TEXT NOT NULL,
+    receiver TEXT NOT NULL,
+    message TEXT NOT NULL,
+    time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    seen INTEGER DEFAULT 0
+)
+""")
 
     conn.commit()
     conn.close()
@@ -221,22 +222,6 @@ def user_online(username):
     conn.close()
 
     socketio.emit("refresh-users")    
-@socketio.on("user-online")
-def user_online(username):
-
-    conn = sqlite3.connect(DATABASE)
-    cursor = conn.cursor()
-
-    cursor.execute(
-        "UPDATE users SET online=1 WHERE username=?",
-        (username,)
-    )
-
-    conn.commit()
-    conn.close()
-
-    socketio.emit("refresh-users")
-
 
 @socketio.on("user-offline")
 def user_offline(username):
