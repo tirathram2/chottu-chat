@@ -1,18 +1,12 @@
 const socket = io();
 
 const myUsername = document.body.dataset.username;
-
 const messages = document.getElementById("messages");
-
 const input = document.getElementById("msg");
-
-socket.on("connect", () => {
-    console.log("Connected");
-});
 
 function sendMsg() {
 
-    if (input.value.trim() == "") return;
+    if (input.value.trim() === "") return;
 
     socket.emit("message", {
         sender: myUsername,
@@ -20,6 +14,8 @@ function sendMsg() {
     });
 
     input.value = "";
+
+    document.getElementById("typing").innerHTML = "";
 }
 
 socket.on("message", function(data) {
@@ -33,8 +29,8 @@ socket.on("message", function(data) {
     }
 
     li.innerHTML = `
-        <b>${data.sender}</b><br>
-        ${data.message}
+        <div class="name">${data.sender}</div>
+        <div class="text">${data.message}</div>
     `;
 
     messages.appendChild(li);
@@ -42,7 +38,7 @@ socket.on("message", function(data) {
     messages.scrollTop = messages.scrollHeight;
 });
 
-input.addEventListener("input", () => {
+input.addEventListener("input", function () {
 
     socket.emit("typing", {
         username: myUsername
@@ -59,18 +55,16 @@ socket.on("typing", function(data) {
 
     clearTimeout(window.typingTimeout);
 
-    window.typingTimeout = setTimeout(() => {
-
+    window.typingTimeout = setTimeout(function() {
         document.getElementById("typing").innerHTML = "";
-
     }, 1000);
 
 });
 
-document.getElementById("voiceCallBtn").onclick = () => {
+document.getElementById("voiceCallBtn").onclick = function () {
     alert("Voice Call coming soon");
 };
 
-document.getElementById("videoCallBtn").onclick = () => {
+document.getElementById("videoCallBtn").onclick = function () {
     alert("Video Call coming soon");
 };
