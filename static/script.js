@@ -1,32 +1,49 @@
 const socket = io();
 
 const myUsername = document.body.dataset.username;
+
 const messages = document.getElementById("messages");
 const input = document.getElementById("msg");
+const typing = document.getElementById("typing");
 
+// Connect
+socket.on("connect", () => {
+    console.log("Connected");
+});
+
+// Send Message
 function sendMsg() {
 
-    if (input.value.trim() === "") return;
+    const text = input.value.trim();
+
+    if (text === "") return;
 
     socket.emit("message", {
         sender: myUsername,
-        message: input.value
+        message: text
     });
 
     input.value = "";
-
-    document.getElementById("typing").innerHTML = "";
 }
 
+// Press Enter
+input.addEventListener("keypress", function(e) {
+
+    if (e.key === "Enter") {
+        sendMsg();
+    }
+
+});
+
+// Receive Message
 socket.on("message", function(data) {
 
     const li = document.createElement("li");
 
-    if (data.sender === myUsername) {
-        li.className = "my-message";
-    } else {
-        li.className = "other-message";
-    }
+    li.className =
+        data.sender === myUsername
+            ? "my-message"
+            : "other-message";
 
     li.innerHTML = `
         <div class="name">${data.sender}</div>
@@ -36,9 +53,11 @@ socket.on("message", function(data) {
     messages.appendChild(li);
 
     messages.scrollTop = messages.scrollHeight;
+
 });
 
-input.addEventListener("input", function () {
+// Typing
+input.addEventListener("input", () => {
 
     socket.emit("typing", {
         username: myUsername
@@ -46,25 +65,34 @@ input.addEventListener("input", function () {
 
 });
 
+// Receive Typing
 socket.on("typing", function(data) {
 
     if (data.username === myUsername) return;
 
-    document.getElementById("typing").innerHTML =
+    typing.innerHTML =
         data.username + " is typing...";
 
-    clearTimeout(window.typingTimeout);
+    clearTimeout(window.typingTimer);
 
-    window.typingTimeout = setTimeout(function() {
-        document.getElementById("typing").innerHTML = "";
+    window.typingTimer = setTimeout(() => {
+
+        typing.innerHTML = "";
+
     }, 1000);
 
 });
 
-document.getElementById("voiceCallBtn").onclick = function () {
-    alert("Voice Call coming soon");
+// Voice Call Button
+document.getElementById("voiceCallBtn").onclick = () => {
+
+    alert("Voice Call Coming Soon");
+
 };
 
-document.getElementById("videoCallBtn").onclick = function () {
-    alert("Video Call coming soon");
+// Video Call Button
+document.getElementById("videoCallBtn").onclick = () => {
+
+    alert("Video Call Coming Soon");
+
 };
