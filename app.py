@@ -176,10 +176,31 @@ def get_messages(username):
 @socketio.on("message")
 def handle_message(data):
 
-    socketio.emit("message", {
-        "sender": data["sender"],
-        "message": data["message"]
-    }, broadcast=True)
+    sender = data["sender"]
+    message = data["message"]
+
+    conn = sqlite3.connect(DATABASE)
+    cursor = conn.cursor()
+
+    cursor.execute(
+        """
+        INSERT INTO messages (sender, receiver, message)
+        VALUES (?, ?, ?)
+        """,
+        (sender, "Global Chat", message)
+    )
+
+    conn.commit()
+    conn.close()
+
+    socketio.emit(
+        "message",
+        {
+            "sender": sender,
+            "message": message
+        },
+        broadcast=True
+    )
 @socketio.on("private-message")
 def private_message(data):
 
