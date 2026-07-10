@@ -1,33 +1,23 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chottu Chat</title>
-
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-</head>
-
-<body data-username="{{ username }}">
-
 <div class="container">
 
+    <!-- Sidebar -->
     <div class="sidebar">
 
         <div class="logo">
-            🔥 Chottu Chat
+            💬 Chottu Chat
         </div>
 
         <div class="search-box">
-            <input type="text" placeholder="Search users...">
+            <input type="text" placeholder="Search...">
         </div>
 
         <div id="userList" class="user-list">
-
+            <!-- Users -->
         </div>
 
     </div>
 
+    <!-- Chat -->
     <div class="chat">
 
         <div class="chat-header">
@@ -38,7 +28,7 @@
 
                 <div>
                     <h3>Global Chat</h3>
-                    <span id="status">Online</span>
+                    <span id="status">🟢 Online</span>
                 </div>
 
             </div>
@@ -55,10 +45,9 @@
 
         </div>
 
-    <ul id="messages"></ul>
+        <ul id="messages"></ul>
 
-<div id="typing" class="typing"></div>
-
+        <div id="typing"></div>
 
         <div class="chat-input">
 
@@ -74,10 +63,3 @@
     </div>
 
 </div>
-
-<script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
-
-<script src="{{ url_for('static', filename='script.js') }}"></script>
-
-</body>
-</html>
