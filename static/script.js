@@ -1,98 +1,85 @@
-const socket = io();
+## 🚀 Features
 
-const myUsername = document.body.dataset.username;
+- **Next.js 15** - Latest version with improved performance and features
+- **React 19** - Latest React version with enhanced capabilities
+- **Tailwind CSS** - Utility-first CSS framework for rapid UI development
 
-const messages = document.getElementById("messages");
-const input = document.getElementById("msg");
-const typing = document.getElementById("typing");
+## 🛠️ Installation
 
-// Connect
-socket.on("connect", () => {
-    console.log("Connected");
-});
+1. Install dependencies:
+  ```bash
+  npm install
+  # or
+  yarn install
+  ```
 
-// Send Message
-function sendMsg() {
+2. Start the development server:
+  ```bash
+  npm run dev
+  # or
+  yarn dev
+  ```
+3. Open [http://localhost:4028](http://localhost:4028) with your browser to see the result.
 
-    const text = input.value.trim();
+## 📁 Project Structure
 
-    if (text === "") return;
+```
+nextjs/
+├── public/             # Static assets
+├── src/
+│   ├── app/            # App router components
+│   │   ├── layout.tsx  # Root layout component
+│   │   └── page.tsx    # Main page component
+│   ├── components/     # Reusable UI components
+│   ├── styles/         # Global styles and Tailwind configuration
+├── next.config.mjs     # Next.js configuration
+├── package.json        # Project dependencies and scripts
+├── postcss.config.js   # PostCSS configuration
+└── tailwind.config.js  # Tailwind CSS configuration
 
-    socket.emit("message", {
-        sender: myUsername,
-        message: text
-    });
+```
 
-    input.value = "";
-}
+## 🧩 Page Editing
 
-// Press Enter
-input.addEventListener("keypress", function(e) {
+You can start editing the page by modifying `src/app/page.tsx`. The page auto-updates as you edit the file.
 
-    if (e.key === "Enter") {
-        sendMsg();
-    }
+## 🎨 Styling
 
-});
+This project uses Tailwind CSS for styling with the following features:
+- Utility-first approach for rapid development
+- Custom theme configuration
+- Responsive design utilities
+- PostCSS and Autoprefixer integration
 
-// Receive Message
-socket.on("message", function(data) {
+## 📦 Available Scripts
 
-    const li = document.createElement("li");
+- `npm run dev` - Start development server on port 4028
+- `npm run build` - Build the application for production
+- `npm run start` - Start the development server
+- `npm run serve` - Start the production server
+- `npm run lint` - Run ESLint to check code quality
+- `npm run lint:fix` - Fix ESLint issues automatically
+- `npm run format` - Format code with Prettier
 
-    li.className =
-        data.sender === myUsername
-            ? "my-message"
-            : "other-message";
+## 📱 Deployment
 
-    li.innerHTML = `
-        <div class="name">${data.sender}</div>
-        <div class="text">${data.message}</div>
-    `;
+Build the application for production:
 
-    messages.appendChild(li);
+  ```bash
+  npm run build
+  ```
 
-    messages.scrollTop = messages.scrollHeight;
+## 📚 Learn More
 
-});
+To learn more about Next.js, take a look at the following resources:
 
-// Typing
-input.addEventListener("input", () => {
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial
 
-    socket.emit("typing", {
-        username: myUsername
-    });
+You can check out the [Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
-});
+## 🙏 Acknowledgments
 
-// Receive Typing
-socket.on("typing", function(data) {
-
-    if (data.username === myUsername) return;
-
-    typing.innerHTML =
-        data.username + " is typing...";
-
-    clearTimeout(window.typingTimer);
-
-    window.typingTimer = setTimeout(() => {
-
-        typing.innerHTML = "";
-
-    }, 1000);
-
-});
-
-// Voice Call Button
-document.getElementById("voiceCallBtn").onclick = () => {
-
-    alert("Voice Call Coming Soon");
-
-};
-
-// Video Call Button
-document.getElementById("videoCallBtn").onclick = () => {
-
-    alert("Video Call Coming Soon");
-
-};
+- Built with [Rocket.new](https://rocket.new)
+- Powered by Next.js and React
+- Styled with Tailwind CSS
