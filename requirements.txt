@@ -2,3 +2,7 @@ flask
 flask-socketio
 eventlet
 Flask-Login
+gunicorn
+eventlet
+Flask
+Flask-SocketIO
