@@ -1,65 +1,539 @@
-<div class="container">
+<!doctype html>
+<html lang="en" data-theme="{{ current_user.theme }}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#101827">
+    <meta name="description" content="Chottu Chat — real-time conversations with people who matter.">
+    <title>Chottu Chat</title>
 
-    <!-- Sidebar -->
-    <div class="sidebar">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Outfit:wght@600;700&display=swap"
+        rel="stylesheet"
+    >
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="app-shell" id="appShell">
+        <aside class="sidebar" id="sidebar" aria-label="Chats">
+            <header class="sidebar-header">
+                <a class="brand" href="{{ url_for('chat') }}" aria-label="Chottu Chat home">
+                    <img
+                        src="{{ url_for('static', filename='logo.png') }}"
+                        alt="Chottu Chat"
+                        width="38"
+                        height="38"
+                    >
+                    <span>Chottu <b>Chat</b></span>
+                </a>
 
-        <div class="logo">
-            💬 Chottu Chat
-        </div>
+                <div class="sidebar-tools">
+                    <button
+                        class="icon-button"
+                        id="notificationsButton"
+                        type="button"
+                        aria-label="Notifications"
+                        title="Notifications"
+                    >
+                        <span aria-hidden="true">♧</span>
+                        <span class="notification-dot hidden" id="notificationDot"></span>
+                    </button>
 
-        <div class="search-box">
-            <input type="text" placeholder="Search...">
-        </div>
+                    <button
+                        class="icon-button"
+                        id="settingsButton"
+                        type="button"
+                        aria-label="Settings"
+                        title="Settings"
+                    >
+                        <span aria-hidden="true">⚙</span>
+                    </button>
+                </div>
+            </header>
 
-        <div id="userList" class="user-list">
-            <!-- Users -->
-        </div>
+            <div class="profile-summary">
+                <img
+                    class="profile-avatar"
+                    id="myAvatar"
+                    src="{% if current_user.avatar %}{{ url_for('uploaded_file', filename=current_user.avatar) }}{% else %}{{ url_for('static', filename='default.png') }}{% endif %}"
+                    alt="{{ current_user.username }}'s profile picture"
+                >
 
-    </div>
-
-    <!-- Chat -->
-    <div class="chat">
-
-        <div class="chat-header">
-
-            <div class="chat-user">
-
-                <img src="https://i.imgur.com/6VBx3io.png">
-
-                <div>
-                    <h3>Global Chat</h3>
-                    <span id="status">🟢 Online</span>
+                <div class="profile-summary-text">
+                    <strong>{{ current_user.username }}</strong>
+                    <span id="myPresenceText">Online</span>
                 </div>
 
+                <button
+                    class="icon-button compact"
+                    id="editProfileButton"
+                    type="button"
+                    aria-label="Edit profile"
+                    title="Edit profile"
+                >
+                    <span aria-hidden="true">✎</span>
+                </button>
             </div>
 
-            <div class="header-btns">
-
-                <button id="voiceCallBtn">📞</button>
-
-                <button id="videoCallBtn">🎥</button>
-
-                <button onclick="window.location='/logout'">🚪</button>
-
+            <div class="search-box">
+                <span aria-hidden="true">⌕</span>
+                <input
+                    id="userSearchInput"
+                    type="search"
+                    autocomplete="off"
+                    placeholder="Search people"
+                    aria-label="Search people"
+                >
+                <button
+                    class="clear-search hidden"
+                    id="clearUserSearchButton"
+                    type="button"
+                    aria-label="Clear people search"
+                >
+                    ×
+                </button>
             </div>
 
-        </div>
+            <nav class="conversation-list" id="conversationList" aria-label="Conversation list">
+                <button
+                    class="conversation global-conversation active"
+                    id="globalConversationButton"
+                    type="button"
+                    data-conversation-type="global"
+                    data-conversation-id="global"
+                >
+                    <span class="conversation-icon" aria-hidden="true">🌐</span>
 
-        <ul id="messages"></ul>
+                    <span class="conversation-info">
+                        <strong>Global lounge</strong>
+                        <small>Everyone is welcome</small>
+                    </span>
 
-        <div id="typing"></div>
+                    <span class="conversation-badge hidden" id="globalUnreadBadge">0</span>
+                </button>
 
-        <div class="chat-input">
+                <div class="conversation-divider">
+                    <span>People</span>
+                </div>
 
-            <input
-                id="msg"
-                placeholder="Type a message..."
+                <div class="user-conversation-list" id="userConversationList" aria-live="polite">
+                    <div class="loading-users">
+                        <span class="loading-spinner" aria-hidden="true"></span>
+                        <span>Loading people...</span>
+                    </div>
+                </div>
+            </nav>
+
+            <footer class="sidebar-footer">
+                <a class="logout-link" href="{{ url_for('logout') }}">
+                    <span aria-hidden="true">↪</span>
+                    <span>Log out</span>
+                </a>
+            </footer>
+        </aside>
+
+        <main class="chat-panel" id="chatPanel">
+            <header class="chat-header">
+                <div class="chat-header-left">
+                    <button
+                        class="icon-button mobile-menu-button"
+                        id="mobileMenuButton"
+                        type="button"
+                        aria-label="Open conversations"
+                        title="Conversations"
+                    >
+                        <span aria-hidden="true">☰</span>
+                    </button>
+
+                    <div class="active-conversation">
+                        <img
+                            id="activeConversationAvatar"
+                            class="active-conversation-avatar"
+                            src="{{ url_for('static', filename='logo.png') }}"
+                            alt=""
+                        >
+
+                        <div class="active-conversation-info">
+                            <strong id="activeConversationName">Global lounge</strong>
+                            <span id="activeConversationStatus">The community chat</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="chat-header-actions">
+                    <button
+                        class="icon-button private-action"
+                        id="voiceCallButton"
+                        type="button"
+                        aria-label="Start voice call"
+                        title="Voice call"
+                        disabled
+                    >
+                        <span aria-hidden="true">☎</span>
+                    </button>
+
+                    <button
+                        class="icon-button private-action"
+                        id="videoCallButton"
+                        type="button"
+                        aria-label="Start video call"
+                        title="Video call"
+                        disabled
+                    >
+                        <span aria-hidden="true">▣</span>
+                    </button>
+
+                    <button
+                        class="icon-button"
+                        id="messageSearchButton"
+                        type="button"
+                        aria-label="Search messages"
+                        title="Search messages"
+                    >
+                        <span aria-hidden="true">⌕</span>
+                    </button>
+                </div>
+            </header>
+
+            <section
+                class="messages-area"
+                id="messagesArea"
+                aria-label="Messages"
+                aria-live="polite"
             >
+                <div class="welcome-message" id="welcomeMessage">
+                    <img
+                        src="{{ url_for('static', filename='logo.png') }}"
+                        alt=""
+                        width="76"
+                        height="76"
+                    >
+                    <h1>Welcome to Chottu Chat</h1>
+                    <p>Start a conversation or say hello in the global lounge.</p>
+                </div>
+            </section>
 
-            <button onclick="sendMsg()">➤</button>
+            <div
+                class="typing-indicator"
+                id="typingIndicator"
+                aria-live="polite"
+                aria-atomic="true"
+            ></div>
 
-        </div>
+            <div class="attachment-preview hidden" id="attachmentPreview">
+                <div class="attachment-preview-content">
+                    <span class="attachment-preview-icon" id="attachmentPreviewIcon">📄</span>
+                    <div>
+                        <strong id="attachmentPreviewName"></strong>
+                        <small id="attachmentPreviewSize"></small>
+                    </div>
+                </div>
 
+                <button
+                    class="icon-button compact"
+                    id="removeAttachmentButton"
+                    type="button"
+                    aria-label="Remove attachment"
+                    title="Remove attachment"
+                >
+                    ×
+                </button>
+            </div>
+
+            <form class="composer" id="messageComposer" autocomplete="off">
+                <input
+                    id="attachmentInput"
+                    type="file"
+                    accept="image/png,image/jpeg,image/gif,image/webp,video/mp4,video/webm,video/quicktime,application/pdf"
+                    hidden
+                >
+
+                <button
+                    class="icon-button composer-button"
+                    id="attachButton"
+                    type="button"
+                    aria-label="Attach image, video, or PDF"
+                    title="Attach file"
+                >
+                    <span aria-hidden="true">＋</span>
+                </button>
+
+                <div class="emoji-picker-wrapper">
+                    <button
+                        class="icon-button composer-button"
+                        id="emojiButton"
+                        type="button"
+                        aria-label="Choose emoji"
+                        title="Emoji"
+                    >
+                        <span aria-hidden="true">☺</span>
+                    </button>
+
+                    <div class="emoji-picker hidden" id="emojiPicker" role="dialog" aria-label="Emoji picker">
+                        <button type="button" data-emoji="😀">😀</button>
+                        <button type="button" data-emoji="😂">😂</button>
+                        <button type="button" data-emoji="😍">😍</button>
+                        <button type="button" data-emoji="🥳">🥳</button>
+                        <button type="button" data-emoji="😎">😎</button>
+                        <button type="button" data-emoji="🤔">🤔</button>
+                        <button type="button" data-emoji="😭">😭</button>
+                        <button type="button" data-emoji="🔥">🔥</button>
+                        <button type="button" data-emoji="✨">✨</button>
+                        <button type="button" data-emoji="🎉">🎉</button>
+                        <button type="button" data-emoji="❤️">❤️</button>
+                        <button type="button" data-emoji="👍">👍</button>
+                        <button type="button" data-emoji="👋">👋</button>
+                        <button type="button" data-emoji="🙏">🙏</button>
+                        <button type="button" data-emoji="🚀">🚀</button>
+                        <button type="button" data-emoji="💬">💬</button>
+                    </div>
+                </div>
+
+                <label class="visually-hidden" for="messageInput">Write a message</label>
+                <textarea
+                    id="messageInput"
+                    rows="1"
+                    maxlength="3000"
+                    placeholder="Write a message"
+                    aria-label="Write a message"
+                ></textarea>
+
+                <button
+                    class="send-button"
+                    id="sendButton"
+                    type="submit"
+                    aria-label="Send message"
+                    title="Send message"
+                >
+                    <span aria-hidden="true">➤</span>
+                </button>
+            </form>
+        </main>
     </div>
 
-</div>
+    <dialog class="modal settings-modal" id="settingsModal" aria-labelledby="settingsTitle">
+        <form id="settingsForm" method="dialog">
+            <header class="modal-header">
+                <div>
+                    <p class="modal-eyebrow">Your account</p>
+                    <h2 id="settingsTitle">Settings</h2>
+                </div>
+
+                <button
+                    class="icon-button"
+                    id="closeSettingsButton"
+                    type="button"
+                    aria-label="Close settings"
+                >
+                    ×
+                </button>
+            </header>
+
+            <div class="settings-profile-photo">
+                <img
+                    id="settingsAvatarPreview"
+                    src="{% if current_user.avatar %}{{ url_for('uploaded_file', filename=current_user.avatar) }}{% else %}{{ url_for('static', filename='default.png') }}{% endif %}"
+                    alt="Your profile picture"
+                >
+
+                <div>
+                    <strong>Profile photo</strong>
+                    <span>PNG, JPG, GIF, or WEBP</span>
+                    <label class="secondary-button file-select-button" for="avatarInput">
+                        Choose photo
+                    </label>
+                    <input
+                        id="avatarInput"
+                        type="file"
+                        accept="image/png,image/jpeg,image/gif,image/webp"
+                        hidden
+                    >
+                </div>
+            </div>
+
+            <label class="form-field" for="bioInput">
+                <span>About you</span>
+                <textarea
+                    id="bioInput"
+                    rows="3"
+                    maxlength="180"
+                    placeholder="Add a short bio"
+                >{{ current_user.bio }}</textarea>
+                <small><span id="bioCharacterCount">{{ current_user.bio|length }}</span>/180</small>
+            </label>
+
+            <label class="form-field" for="themeSelect">
+                <span>Appearance</span>
+                <select id="themeSelect">
+                    <option value="dark" {% if current_user.theme == "dark" %}selected{% endif %}>Dark mode</option>
+                    <option value="light" {% if current_user.theme == "light" %}selected{% endif %}>Light mode</option>
+                </select>
+            </label>
+
+            <button class="primary-button" id="saveSettingsButton" type="submit">
+                Save changes
+            </button>
+        </form>
+    </dialog>
+
+    <dialog class="modal search-modal" id="messageSearchModal" aria-labelledby="messageSearchTitle">
+        <form method="dialog" class="message-search-form">
+            <header class="modal-header">
+                <div>
+                    <p class="modal-eyebrow">Find anything</p>
+                    <h2 id="messageSearchTitle">Search messages</h2>
+                </div>
+
+                <button
+                    class="icon-button"
+                    id="closeMessageSearchButton"
+                    type="button"
+                    aria-label="Close message search"
+                >
+                    ×
+                </button>
+            </header>
+
+            <div class="search-box modal-search-box">
+                <span aria-hidden="true">⌕</span>
+                <input
+                    id="messageSearchInput"
+                    type="search"
+                    autocomplete="off"
+                    placeholder="Type at least two characters"
+                    aria-label="Search all your messages"
+                >
+            </div>
+
+            <div class="message-search-results" id="messageSearchResults" aria-live="polite">
+                <p class="search-empty-state">Search through your conversations.</p>
+            </div>
+        </form>
+    </dialog>
+
+    <dialog class="modal notifications-modal" id="notificationsModal" aria-labelledby="notificationsTitle">
+        <form method="dialog">
+            <header class="modal-header">
+                <div>
+                    <p class="modal-eyebrow">Stay up to date</p>
+                    <h2 id="notificationsTitle">Notifications</h2>
+                </div>
+
+                <button
+                    class="icon-button"
+                    id="closeNotificationsButton"
+                    type="button"
+                    aria-label="Close notifications"
+                >
+                    ×
+                </button>
+            </header>
+
+            <div class="notification-list" id="notificationList">
+                <p class="search-empty-state">You are all caught up.</p>
+            </div>
+        </form>
+    </dialog>
+
+    <dialog class="modal call-modal" id="callModal" aria-labelledby="callTitle">
+        <form method="dialog" class="call-form">
+            <button
+                class="icon-button call-close-button"
+                id="closeCallButton"
+                type="button"
+                aria-label="Close call"
+            >
+                ×
+            </button>
+
+            <div class="call-content">
+                <div class="call-avatar-ring">
+                    <img
+                        id="callAvatar"
+                        src="{{ url_for('static', filename='default.png') }}"
+                        alt=""
+                    >
+                </div>
+
+                <p class="modal-eyebrow" id="callTypeLabel">Voice call</p>
+                <h2 id="callTitle">Connecting...</h2>
+                <p class="call-status" id="callStatus">Preparing a secure connection</p>
+
+                <video
+                    id="remoteVideo"
+                    class="remote-video hidden"
+                    autoplay
+                    playsinline
+                ></video>
+
+                <video
+                    id="localVideo"
+                    class="local-video hidden"
+                    autoplay
+                    muted
+                    playsinline
+                ></video>
+
+                <div class="call-controls">
+                    <button
+                        class="call-control"
+                        id="muteCallButton"
+                        type="button"
+                        aria-label="Mute microphone"
+                        title="Mute microphone"
+                    >
+                        <span aria-hidden="true">🎙</span>
+                    </button>
+
+                    <button
+                        class="call-control end-call-control"
+                        id="endCallButton"
+                        type="button"
+                        aria-label="End call"
+                        title="End call"
+                    >
+                        <span aria-hidden="true">☎</span>
+                    </button>
+
+                    <button
+                        class="call-control video-control"
+                        id="toggleCameraButton"
+                        type="button"
+                        aria-label="Toggle camera"
+                        title="Toggle camera"
+                    >
+                        <span aria-hidden="true">▣</span>
+                    </button>
+                </div>
+            </div>
+        </form>
+    </dialog>
+
+    <div class="toast-container" id="toastContainer" aria-live="polite" aria-atomic="true"></div>
+
+    <script>
+        window.CHOTTU = {
+            currentUser: {
+                id: {{ current_user.id|tojson }},
+                username: {{ current_user.username|tojson }},
+                avatar: {{ current_user.avatar|default('', true)|tojson }},
+                avatarUrl: {% if current_user.avatar %}{{ url_for('uploaded_file', filename=current_user.avatar)|tojson }}{% else %}{{ url_for('static', filename='default.png')|tojson }}{% endif %},
+                theme: {{ current_user.theme|tojson }}
+            },
+            endpoints: {
+                users: {{ url_for('get_users')|tojson }},
+                globalMessages: {{ url_for('get_global_messages')|tojson }},
+                privateMessagesPrefix: {{ url_for('get_private_messages', user_id=0)|replace('/0', '/')|tojson }},
+                userPrefix: {{ url_for('get_user', user_id=0)|replace('/0', '/')|tojson }},
+                upload: {{ url_for('upload_attachment')|tojson }},
+                profile: {{ url_for('update_profile')|tojson }},
+                messageSearch: {{ url_for('search_messages')|tojson }}
+            }
+        };
+    </script>
+    <script src="https://cdn.socket.io/4.8.1/socket.io.min.js"></script>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
