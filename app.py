@@ -821,7 +821,7 @@ def handle_webrtc_signal(data):
 
 
 init_db()
-
+application = app
 if __name__ == "__main__":
     socketio.run(
         app,
