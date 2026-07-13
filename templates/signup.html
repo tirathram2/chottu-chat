@@ -33,14 +33,16 @@
 <form method="POST" action="{{ url_for('signup') }}">
 
 <input
-id="name"
+id="username"
+name="username"
 type="text"
-placeholder="Full Name"
+placeholder="Username"
 required
 >
 
 <input
 id="email"
+name="email"
 type="email"
 placeholder="Email"
 required
@@ -48,6 +50,7 @@ required
 
 <input
 id="password"
+name="password"
 type="password"
 placeholder="Password"
 required
