@@ -30,7 +30,7 @@
 
 <p>Join Chottu Chat</p>
 
-<form id="signupForm">
+<form method="POST" action="{{ url_for('signup') }}">
 
 <input
 id="name"
@@ -65,7 +65,7 @@ Create Account
 
 Already have an account?
 
-<a href="/login.html">
+<a href="{{ url_for('login') }}">
 
 Login
 
