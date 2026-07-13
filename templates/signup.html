@@ -27,9 +27,15 @@
 </div>
 
 <h1>Create Account</h1>
-
-<p>Join Chottu Chat</p>
-
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+      <div style="color:red; margin:10px 0;">
+        {{ message }}
+      </div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
 <form method="POST" action="{{ url_for('signup') }}">
 
 <input
