@@ -1,539 +1,536 @@
+
 <!doctype html>
-<html lang="en" data-theme="{{ current_user.theme }}">
+<html lang="en">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="theme-color" content="#101827">
-    <meta name="description" content="Chottu Chat — real-time conversations with people who matter.">
-    <title>Chottu Chat</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#0b1220">
+  <title>Chottu Chat</title>
+  <link rel="stylesheet" href="{{ url_for('static',filename='style.css') }}">
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Outfit:wght@600;700&display=swap"
-        rel="stylesheet"
-    >
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <style>
+    :root{
+      --ink:#edf5ff;--muted:#91a0b8;--surface:rgba(15,25,43,.76);
+      --soft:rgba(255,255,255,.055);--line:rgba(194,219,255,.105);
+      --accent:#7167ff;--accent2:#34d6c5;--bubble:rgba(113,103,255,.14);
+      --shadow:0 24px 70px rgba(0,0,0,.32)
+    }
+    html{background:#09111e}
+    body{
+      min-height:100vh;
+      background:radial-gradient(circle at 15% 6%,#303c7a 0,transparent 28%),
+      radial-gradient(circle at 92% 90%,#0c665e 0,transparent 24%),#09111e;
+      color:var(--ink)
+    }
+    body:before,body:after{
+      content:"";position:fixed;border-radius:50%;filter:blur(72px);
+      pointer-events:none;z-index:-1
+    }
+    body:before{width:22rem;height:22rem;background:#5550df33;left:-9rem;top:36%}
+    body:after{width:18rem;height:18rem;background:#13bdab25;right:-8rem;top:-5rem}
+
+    *{scrollbar-width:thin;scrollbar-color:#6b75a755 transparent}
+    *::-webkit-scrollbar{width:7px;height:7px}
+    *::-webkit-scrollbar-thumb{background:#7280a65c;border-radius:999px}
+    *::-webkit-scrollbar-track{background:transparent}
+
+    button{transition:transform .2s ease,background .2s ease,color .2s ease,box-shadow .2s ease}
+    .hidden{display:none!important}
+
+    .app-shell{
+      width:min(1540px,calc(100vw - 32px));
+      height:calc(100vh - 32px);
+      margin:16px auto;
+      border:1px solid rgba(255,255,255,.12);
+      border-radius:28px;
+      background:rgba(9,17,30,.64);
+      box-shadow:0 30px 100px #0008;
+      backdrop-filter:blur(24px);
+      -webkit-backdrop-filter:blur(24px);
+      overflow:hidden
+    }
+
+    .sidebar{
+      background:linear-gradient(180deg,rgba(18,31,52,.94),rgba(10,19,34,.87));
+      border-right-color:var(--line)
+    }
+
+    .side-head,.chat-head{
+      height:84px;
+      border-bottom-color:var(--line);
+      padding:0 22px
+    }
+
+    .brand{font-size:21px;letter-spacing:-.5px}
+    .brand img{
+      width:40px;height:40px;border-radius:14px;
+      box-shadow:0 8px 20px #6058f066
+    }
+    .brand b{color:#a99fff}
+    .head-actions{gap:8px}
+
+    .head-actions button,.call-actions button,.me-card button{
+      width:38px;height:38px;border:1px solid transparent;
+      border-radius:13px;color:#b9c8e3;background:rgba(255,255,255,.035)
+    }
+
+    .head-actions button:hover,.call-actions button:hover,.me-card button:hover{
+      background:rgba(113,103,255,.17);
+      border-color:#9e96ff3a;
+      transform:translateY(-2px);
+      color:#fff
+    }
+
+    .search{
+      height:46px;margin:18px 16px 12px;
+      border:1px solid var(--line);
+      border-radius:15px;
+      background:rgba(255,255,255,.045);
+      box-shadow:inset 0 1px #ffffff0d
+    }
+
+    .search:focus-within{
+      border-color:#918bff91;
+      box-shadow:0 0 0 3px #7167ff1c
+    }
+
+    .search span{font-size:18px}
+    .search input::placeholder,.composer textarea::placeholder{color:#8290a8}
+
+    .tabs{
+      padding:0 16px 10px;
+      gap:7px;
+      border-bottom:1px solid var(--line)
+    }
+
+    .tab{
+      flex:1;border:1px solid transparent;border-radius:11px;
+      padding:10px 14px
+    }
+
+    .tab:hover{background:#ffffff08;color:#dce8fc}
+
+    .tab.active{
+      background:linear-gradient(135deg,#7469ff2c,#34d6c520);
+      border-color:#a49cff2e;
+      color:#dcd9ff;
+      box-shadow:inset 0 1px #ffffff16
+    }
+
+    .conversation-list,.people-list{padding:11px}
+
+    .conversation{
+      position:relative;gap:12px;margin:3px 0;padding:12px;
+      border:1px solid transparent;border-radius:17px
+    }
+
+    .conversation:hover{
+      background:rgba(255,255,255,.06);
+      transform:translateX(2px)
+    }
+
+    .conversation.active{
+      background:linear-gradient(105deg,#7167ff2c,#34d6c511);
+      border-color:#a7a0ff29;
+      box-shadow:inset 3px 0 #8f87ff
+    }
+
+    .conversation img,.me-card img{
+      width:48px;height:48px;border-radius:16px;
+      border:1px solid #ffffff16;
+      box-shadow:0 6px 14px #0003
+    }
+
+    .conversation strong{font-size:14px;letter-spacing:.05px}
+    .conversation p{font-size:12px;color:var(--muted);margin-top:5px}
+
+    .status-dot{
+      width:12px;height:12px;margin:35px 0 0 37px;
+      border:2px solid #14233a;background:#36da93;
+      box-shadow:0 0 0 3px #36da9315
+    }
+
+    .me-card{
+      margin:10px;border:1px solid var(--line);
+      border-radius:18px;padding:11px;
+      background:rgba(255,255,255,.035);
+      box-shadow:inset 0 1px #ffffff0b
+    }
+
+    .me-card small{color:#5ce6ad}
+    .me-card form button{color:#f3a7b4}
+    .me-card form button:hover{background:#f24f6930;color:#ffb2bd}
+
+    .chat-panel{
+      background:linear-gradient(135deg,rgba(15,29,49,.83),rgba(8,17,30,.83));
+      isolation:isolate
+    }
+
+    .chat-panel:before{
+      content:"";position:absolute;inset:0;pointer-events:none;
+      background:linear-gradient(120deg,transparent 0 43%,#74a9ff08 43.1%,transparent 43.3%);
+      z-index:-1
+    }
+
+    .empty-orb{
+      width:104px;height:104px;border-radius:34px;
+      background:linear-gradient(135deg,#8378ff,#35cfc0);
+      box-shadow:0 22px 55px #7167ff60
+    }
+
+    .empty-state h1{font-size:34px;letter-spacing:-1.3px}
+    .empty-state p{font-size:15px}
+
+    .chat-head{
+      background:rgba(14,26,45,.72);
+      backdrop-filter:blur(18px);
+      -webkit-backdrop-filter:blur(18px)
+    }
+
+    .chat-head>img{
+      width:46px;height:46px;border-radius:16px;
+      border:1px solid #ffffff19
+    }
+
+    .chat-title strong{font-size:15px}
+    .chat-title small{color:#59e3ac;font-size:12px}
+    .call-actions{gap:7px}
+    .back{border-radius:12px}
+
+    .messages{
+      padding:30px clamp(24px,5vw,76px);
+      gap:13px;
+      background-image:
+        radial-gradient(#a5c2eb13 .75px,transparent .75px),
+        linear-gradient(135deg,#13243b66,#0d172766);
+      background-size:19px 19px,100% 100%
+    }
+
+    .message{
+      max-width:min(72%,620px);
+      animation:message-in .32s cubic-bezier(.2,.8,.25,1) both
+    }
+
+    .bubble{
+      padding:11px 14px 8px;
+      border:1px solid #ffffff0d;
+      border-radius:18px 18px 18px 5px;
+      background:rgba(30,46,69,.74);
+      box-shadow:0 10px 24px #0000001f;
+      backdrop-filter:blur(10px)
+    }
+
+    .mine .bubble{
+      background:linear-gradient(135deg,#7167ff,#5e65e9);
+      border-color:#b8b2ff40;
+      box-shadow:0 12px 25px #5049b136
+    }
+
+    .message img.avatar{
+      width:30px;height:30px;border-radius:11px;
+      border:1px solid #ffffff16
+    }
+
+    .meta{margin-top:5px}
+    .mine .meta{color:#e2e1ff}
+    .check.seen{color:#6df2ee;text-shadow:0 0 10px #6df2ee73}
+
+    .attachment{
+      max-width:min(310px,100%);
+      max-height:250px;
+      border:1px solid #ffffff22;
+      border-radius:13px;
+      box-shadow:0 8px 20px #0004
+    }
+
+    .file-link{display:block;padding:8px 4px;font-weight:600}
+
+    .typing{
+      padding:7px clamp(24px,5vw,76px);
+      color:#a7b9d2;background:#ffffff05
+    }
+
+    .typing i{
+      width:6px;height:6px;background:#6ddef5;
+      box-shadow:0 0 8px #6ddef588
+    }
+
+    .composer{
+      margin:0 16px 16px;
+      padding:9px 10px;
+      gap:8px;
+      border:1px solid var(--line);
+      border-radius:20px;
+      background:rgba(19,33,53,.85);
+      box-shadow:0 12px 35px #0003;
+      backdrop-filter:blur(16px)
+    }
+
+    .composer textarea{
+      padding:12px 13px;
+      border:1px solid transparent;
+      background:transparent
+    }
+
+    .composer textarea:focus{
+      border-color:#8078ff63;
+      background:#ffffff05
+    }
+
+    .composer button{
+      width:42px;height:42px;border-radius:14px;color:#acbbd5
+    }
+
+    .composer button:hover{
+      background:#ffffff0b;color:#fff;
+      transform:translateY(-2px)
+    }
+
+    .composer .send{
+      background:linear-gradient(135deg,#7d72ff,#5c65ec)!important;
+      box-shadow:0 8px 16px #6258e444
+    }
+
+    .composer .send:hover{box-shadow:0 12px 24px #6258e466}
+
+    .emoji-popover{
+      bottom:70px;left:66px;max-width:260px;line-height:2.1;
+      border:1px solid var(--line);
+      border-radius:17px;
+      background:#192941f2;
+      box-shadow:0 20px 50px #0008;
+      backdrop-filter:blur(20px);
+      cursor:pointer
+    }
+
+    .emoji-popover:hover{word-spacing:9px}
+
+    .message-search{
+      top:84px;right:22px;
+      border:1px solid var(--line);
+      border-radius:0 0 17px 17px;
+      background:#17273df5;
+      backdrop-filter:blur(20px)
+    }
+
+    .message-search input{
+      border:1px solid var(--line);
+      border-radius:11px;
+      background:#ffffff08
+    }
+
+    .result{border-bottom-color:var(--line)}
+    .result:hover{background:#ffffff08}
+
+    .modal,.call-modal{
+      background:#030915a8;
+      backdrop-filter:blur(12px)
+    }
+
+    .modal-card,.call-card{
+      border:1px solid #ffffff1c;
+      border-radius:26px;
+      background:linear-gradient(145deg,#1e3150f5,#111e32f5);
+      box-shadow:0 28px 80px #000a
+    }
+
+    .modal-card:before{
+      content:"";position:absolute;inset:0;border-radius:inherit;
+      background:linear-gradient(130deg,#ffffff12,transparent 35%);
+      pointer-events:none
+    }
+
+    .modal-card h2{font:600 25px Outfit;color:#f3f6ff}
+    .close{z-index:1;border-radius:12px}
+    .close:hover{background:#ffffff11;color:white}
+    .modal-card textarea{border-color:var(--line);background:#ffffff08}
+
+    .avatar-edit img{
+      width:68px;height:68px;border-radius:22px;
+      border:2px solid #9b94ff5c
+    }
+
+    .primary{
+      background:linear-gradient(135deg,#7d72ff,#5667e8);
+      box-shadow:0 10px 22px #6258e433
+    }
+
+    .primary:hover{
+      transform:translateY(-2px);
+      box-shadow:0 14px 28px #6258e455
+    }
+
+    .call-card>img{
+      border:2px solid #a89fff55;
+      box-shadow:0 12px 32px #7068ff55
+    }
+
+    .call-controls button{
+      background:#ffffff10;
+      border:1px solid var(--line)
+    }
+
+    @keyframes message-in{
+      from{opacity:0;transform:translateY(9px) scale(.98)}
+      to{opacity:1;transform:none}
+    }
+
+    @media(max-width:700px){
+      .app-shell{
+        width:100vw;height:100dvh;margin:0;
+        border:0;border-radius:0
+      }
+
+      .side-head,.chat-head{height:70px;padding:0 16px}
+      .messages{padding:20px 14px}
+      .composer{margin:0 9px 9px;border-radius:18px}
+      .message-search{top:70px;right:10px}
+      .chat-head>img{width:42px;height:42px}
+      .head-actions button,.call-actions button{width:35px;height:35px}
+      .back{display:grid;place-items:center}
+      .message{max-width:86%}
+    }
+  </style>
 </head>
+
 <body>
-    <div class="app-shell" id="appShell">
-        <aside class="sidebar" id="sidebar" aria-label="Chats">
-            <header class="sidebar-header">
-                <a class="brand" href="{{ url_for('chat') }}" aria-label="Chottu Chat home">
-                    <img
-                        src="{{ url_for('static', filename='logo.png') }}"
-                        alt="Chottu Chat"
-                        width="38"
-                        height="38"
-                    >
-                    <span>Chottu <b>Chat</b></span>
-                </a>
+  <div class="app-shell" id="app">
+    <aside class="sidebar" id="sidebar">
+      <header class="side-head">
+        <a class="brand">
+          <img src="{{ url_for('static',filename='logo.png') }}"
+               onerror="this.style.display='none'">
+          <span>Chottu <b>Chat</b></span>
+        </a>
 
-                <div class="sidebar-tools">
-                    <button
-                        class="icon-button"
-                        id="notificationsButton"
-                        type="button"
-                        aria-label="Notifications"
-                        title="Notifications"
-                    >
-                        <span aria-hidden="true">♧</span>
-                        <span class="notification-dot hidden" id="notificationDot"></span>
-                    </button>
+        <div class="head-actions">
+          <button id="themeBtn" title="Toggle theme">☾</button>
+          <button id="settingsBtn" title="Settings">⚙</button>
+        </div>
+      </header>
 
-                    <button
-                        class="icon-button"
-                        id="settingsButton"
-                        type="button"
-                        aria-label="Settings"
-                        title="Settings"
-                    >
-                        <span aria-hidden="true">⚙</span>
-                    </button>
-                </div>
-            </header>
+      <div class="search">
+        <span>⌕</span>
+        <input id="userSearch" placeholder="Search people or messages">
+      </div>
 
-            <div class="profile-summary">
-                <img
-                    class="profile-avatar"
-                    id="myAvatar"
-                    src="{% if current_user.avatar %}{{ url_for('uploaded_file', filename=current_user.avatar) }}{% else %}{{ url_for('static', filename='default.png') }}{% endif %}"
-                    alt="{{ current_user.username }}'s profile picture"
-                >
+      <nav class="tabs">
+        <button class="tab active" data-tab="chats">Chats</button>
+        <button class="tab" data-tab="people">People</button>
+      </nav>
 
-                <div class="profile-summary-text">
-                    <strong>{{ current_user.username }}</strong>
-                    <span id="myPresenceText">Online</span>
-                </div>
+      <section class="conversation-list" id="conversationList"></section>
+      <section class="people-list hidden" id="peopleList"></section>
 
-                <button
-                    class="icon-button compact"
-                    id="editProfileButton"
-                    type="button"
-                    aria-label="Edit profile"
-                    title="Edit profile"
-                >
-                    <span aria-hidden="true">✎</span>
-                </button>
-            </div>
+      <footer class="me-card">
+        <img id="myAvatar">
+        <div>
+          <strong id="myName"></strong>
+          <small>Online</small>
+        </div>
+        <form action="{{ url_for('logout') }}" method="post">
+          <button title="Log out">↪</button>
+        </form>
+      </footer>
+    </aside>
 
-            <div class="search-box">
-                <span aria-hidden="true">⌕</span>
-                <input
-                    id="userSearchInput"
-                    type="search"
-                    autocomplete="off"
-                    placeholder="Search people"
-                    aria-label="Search people"
-                >
-                <button
-                    class="clear-search hidden"
-                    id="clearUserSearchButton"
-                    type="button"
-                    aria-label="Clear people search"
-                >
-                    ×
-                </button>
-            </div>
+    <main class="chat-panel" id="chatPanel">
+      <div class="empty-state" id="emptyState">
+        <div class="empty-orb">✦</div>
+        <h1>Chottu Chat</h1>
+        <p>Your conversations, beautifully connected.</p>
+        <button class="primary mobile-start" id="mobileStart">Browse people</button>
+      </div>
 
-            <nav class="conversation-list" id="conversationList" aria-label="Conversation list">
-                <button
-                    class="conversation global-conversation active"
-                    id="globalConversationButton"
-                    type="button"
-                    data-conversation-type="global"
-                    data-conversation-id="global"
-                >
-                    <span class="conversation-icon" aria-hidden="true">🌐</span>
+      <div class="chat-view hidden" id="chatView">
+        <header class="chat-head">
+          <button class="back" id="backBtn">←</button>
+          <img id="chatAvatar">
 
-                    <span class="conversation-info">
-                        <strong>Global lounge</strong>
-                        <small>Everyone is welcome</small>
-                    </span>
+          <div class="chat-title">
+            <strong id="chatName"></strong>
+            <small id="chatStatus">Online</small>
+          </div>
 
-                    <span class="conversation-badge hidden" id="globalUnreadBadge">0</span>
-                </button>
+          <div class="call-actions">
+            <button id="voiceCall" title="Voice call">☎</button>
+            <button id="videoCall" title="Video call">▣</button>
+            <button id="searchToggle" title="Search messages">⌕</button>
+          </div>
+        </header>
 
-                <div class="conversation-divider">
-                    <span>People</span>
-                </div>
+        <div class="message-search hidden" id="messageSearch">
+          <input id="messageQuery" placeholder="Search all messages…">
+          <div id="searchResults"></div>
+        </div>
 
-                <div class="user-conversation-list" id="userConversationList" aria-live="polite">
-                    <div class="loading-users">
-                        <span class="loading-spinner" aria-hidden="true"></span>
-                        <span>Loading people...</span>
-                    </div>
-                </div>
-            </nav>
+        <div class="messages" id="messages"></div>
 
-            <footer class="sidebar-footer">
-                <a class="logout-link" href="{{ url_for('logout') }}">
-                    <span aria-hidden="true">↪</span>
-                    <span>Log out</span>
-                </a>
-            </footer>
-        </aside>
+        <div class="typing hidden" id="typing">
+          <i></i><i></i><i></i> typing
+        </div>
 
-        <main class="chat-panel" id="chatPanel">
-            <header class="chat-header">
-                <div class="chat-header-left">
-                    <button
-                        class="icon-button mobile-menu-button"
-                        id="mobileMenuButton"
-                        type="button"
-                        aria-label="Open conversations"
-                        title="Conversations"
-                    >
-                        <span aria-hidden="true">☰</span>
-                    </button>
+        <form class="composer" id="composer">
+          <input id="fileInput" type="file" accept="image/*,video/*,.pdf" hidden>
+          <button type="button" id="attachBtn" title="Attach file">＋</button>
+          <button type="button" id="emojiBtn" title="Emoji">☺</button>
 
-                    <div class="active-conversation">
-                        <img
-                            id="activeConversationAvatar"
-                            class="active-conversation-avatar"
-                            src="{{ url_for('static', filename='logo.png') }}"
-                            alt=""
-                        >
+          <div class="emoji-popover hidden" id="emojiPop">
+            😀 😍 😂 🎉 👍 ❤️ 🙏 🔥 😢 😎 ✨
+          </div>
 
-                        <div class="active-conversation-info">
-                            <strong id="activeConversationName">Global lounge</strong>
-                            <span id="activeConversationStatus">The community chat</span>
-                        </div>
-                    </div>
-                </div>
+          <textarea id="messageInput" rows="1" placeholder="Write a message" maxlength="4000"></textarea>
+          <button class="send" title="Send" type="submit">➤</button>
+        </form>
+      </div>
+    </main>
+  </div>
 
-                <div class="chat-header-actions">
-                    <button
-                        class="icon-button private-action"
-                        id="voiceCallButton"
-                        type="button"
-                        aria-label="Start voice call"
-                        title="Voice call"
-                        disabled
-                    >
-                        <span aria-hidden="true">☎</span>
-                    </button>
+  <div class="modal hidden" id="settingsModal">
+    <div class="modal-card">
+      <button class="close">×</button>
+      <h2>Settings</h2>
 
-                    <button
-                        class="icon-button private-action"
-                        id="videoCallButton"
-                        type="button"
-                        aria-label="Start video call"
-                        title="Video call"
-                        disabled
-                    >
-                        <span aria-hidden="true">▣</span>
-                    </button>
+      <form id="profileForm">
+        <label class="avatar-edit">
+          <img id="settingsAvatar">
+          <span>Change photo</span>
+          <input name="avatar" type="file" accept="image/*">
+        </label>
 
-                    <button
-                        class="icon-button"
-                        id="messageSearchButton"
-                        type="button"
-                        aria-label="Search messages"
-                        title="Search messages"
-                    >
-                        <span aria-hidden="true">⌕</span>
-                    </button>
-                </div>
-            </header>
+        <label>
+          About you
+          <textarea name="bio" id="bioInput" maxlength="180" placeholder="A little about you"></textarea>
+        </label>
 
-            <section
-                class="messages-area"
-                id="messagesArea"
-                aria-label="Messages"
-                aria-live="polite"
-            >
-                <div class="welcome-message" id="welcomeMessage">
-                    <img
-                        src="{{ url_for('static', filename='logo.png') }}"
-                        alt=""
-                        width="76"
-                        height="76"
-                    >
-                    <h1>Welcome to Chottu Chat</h1>
-                    <p>Start a conversation or say hello in the global lounge.</p>
-                </div>
-            </section>
-
-            <div
-                class="typing-indicator"
-                id="typingIndicator"
-                aria-live="polite"
-                aria-atomic="true"
-            ></div>
-
-            <div class="attachment-preview hidden" id="attachmentPreview">
-                <div class="attachment-preview-content">
-                    <span class="attachment-preview-icon" id="attachmentPreviewIcon">📄</span>
-                    <div>
-                        <strong id="attachmentPreviewName"></strong>
-                        <small id="attachmentPreviewSize"></small>
-                    </div>
-                </div>
-
-                <button
-                    class="icon-button compact"
-                    id="removeAttachmentButton"
-                    type="button"
-                    aria-label="Remove attachment"
-                    title="Remove attachment"
-                >
-                    ×
-                </button>
-            </div>
-
-            <form class="composer" id="messageComposer" autocomplete="off">
-                <input
-                    id="attachmentInput"
-                    type="file"
-                    accept="image/png,image/jpeg,image/gif,image/webp,video/mp4,video/webm,video/quicktime,application/pdf"
-                    hidden
-                >
-
-                <button
-                    class="icon-button composer-button"
-                    id="attachButton"
-                    type="button"
-                    aria-label="Attach image, video, or PDF"
-                    title="Attach file"
-                >
-                    <span aria-hidden="true">＋</span>
-                </button>
-
-                <div class="emoji-picker-wrapper">
-                    <button
-                        class="icon-button composer-button"
-                        id="emojiButton"
-                        type="button"
-                        aria-label="Choose emoji"
-                        title="Emoji"
-                    >
-                        <span aria-hidden="true">☺</span>
-                    </button>
-
-                    <div class="emoji-picker hidden" id="emojiPicker" role="dialog" aria-label="Emoji picker">
-                        <button type="button" data-emoji="😀">😀</button>
-                        <button type="button" data-emoji="😂">😂</button>
-                        <button type="button" data-emoji="😍">😍</button>
-                        <button type="button" data-emoji="🥳">🥳</button>
-                        <button type="button" data-emoji="😎">😎</button>
-                        <button type="button" data-emoji="🤔">🤔</button>
-                        <button type="button" data-emoji="😭">😭</button>
-                        <button type="button" data-emoji="🔥">🔥</button>
-                        <button type="button" data-emoji="✨">✨</button>
-                        <button type="button" data-emoji="🎉">🎉</button>
-                        <button type="button" data-emoji="❤️">❤️</button>
-                        <button type="button" data-emoji="👍">👍</button>
-                        <button type="button" data-emoji="👋">👋</button>
-                        <button type="button" data-emoji="🙏">🙏</button>
-                        <button type="button" data-emoji="🚀">🚀</button>
-                        <button type="button" data-emoji="💬">💬</button>
-                    </div>
-                </div>
-
-                <label class="visually-hidden" for="messageInput">Write a message</label>
-                <textarea
-                    id="messageInput"
-                    rows="1"
-                    maxlength="3000"
-                    placeholder="Write a message"
-                    aria-label="Write a message"
-                ></textarea>
-
-                <button
-                    class="send-button"
-                    id="sendButton"
-                    type="submit"
-                    aria-label="Send message"
-                    title="Send message"
-                >
-                    <span aria-hidden="true">➤</span>
-                </button>
-            </form>
-        </main>
+        <button class="primary">Save changes</button>
+      </form>
     </div>
+  </div>
 
-    <dialog class="modal settings-modal" id="settingsModal" aria-labelledby="settingsTitle">
-        <form id="settingsForm" method="dialog">
-            <header class="modal-header">
-                <div>
-                    <p class="modal-eyebrow">Your account</p>
-                    <h2 id="settingsTitle">Settings</h2>
-                </div>
+  <div class="call-modal hidden" id="callModal">
+    <div class="call-card">
+      <button class="close">×</button>
+      <img id="callAvatar">
+      <h2 id="callName"></h2>
+      <p id="callState">Connecting securely…</p>
 
-                <button
-                    class="icon-button"
-                    id="closeSettingsButton"
-                    type="button"
-                    aria-label="Close settings"
-                >
-                    ×
-                </button>
-            </header>
+      <div class="call-wave">
+        <i></i><i></i><i></i>
+      </div>
 
-            <div class="settings-profile-photo">
-                <img
-                    id="settingsAvatarPreview"
-                    src="{% if current_user.avatar %}{{ url_for('uploaded_file', filename=current_user.avatar) }}{% else %}{{ url_for('static', filename='default.png') }}{% endif %}"
-                    alt="Your profile picture"
-                >
+      <div class="call-controls">
+        <button title="Mute">◉</button>
+        <button title="Camera">▣</button>
+        <button class="end-call" title="End call">☎</button>
+      </div>
 
-                <div>
-                    <strong>Profile photo</strong>
-                    <span>PNG, JPG, GIF, or WEBP</span>
-                    <label class="secondary-button file-select-button" for="avatarInput">
-                        Choose photo
-                    </label>
-                    <input
-                        id="avatarInput"
-                        type="file"
-                        accept="image/png,image/jpeg,image/gif,image/webp"
-                        hidden
-                    >
-                </div>
-            </div>
+      <small>WebRTC call controls ready for signaling integration</small>
+    </div>
+  </div>
 
-            <label class="form-field" for="bioInput">
-                <span>About you</span>
-                <textarea
-                    id="bioInput"
-                    rows="3"
-                    maxlength="180"
-                    placeholder="Add a short bio"
-                >{{ current_user.bio }}</textarea>
-                <small><span id="bioCharacterCount">{{ current_user.bio|length }}</span>/180</small>
-            </label>
-
-            <label class="form-field" for="themeSelect">
-                <span>Appearance</span>
-                <select id="themeSelect">
-                    <option value="dark" {% if current_user.theme == "dark" %}selected{% endif %}>Dark mode</option>
-                    <option value="light" {% if current_user.theme == "light" %}selected{% endif %}>Light mode</option>
-                </select>
-            </label>
-
-            <button class="primary-button" id="saveSettingsButton" type="submit">
-                Save changes
-            </button>
-        </form>
-    </dialog>
-
-    <dialog class="modal search-modal" id="messageSearchModal" aria-labelledby="messageSearchTitle">
-        <form method="dialog" class="message-search-form">
-            <header class="modal-header">
-                <div>
-                    <p class="modal-eyebrow">Find anything</p>
-                    <h2 id="messageSearchTitle">Search messages</h2>
-                </div>
-
-                <button
-                    class="icon-button"
-                    id="closeMessageSearchButton"
-                    type="button"
-                    aria-label="Close message search"
-                >
-                    ×
-                </button>
-            </header>
-
-            <div class="search-box modal-search-box">
-                <span aria-hidden="true">⌕</span>
-                <input
-                    id="messageSearchInput"
-                    type="search"
-                    autocomplete="off"
-                    placeholder="Type at least two characters"
-                    aria-label="Search all your messages"
-                >
-            </div>
-
-            <div class="message-search-results" id="messageSearchResults" aria-live="polite">
-                <p class="search-empty-state">Search through your conversations.</p>
-            </div>
-        </form>
-    </dialog>
-
-    <dialog class="modal notifications-modal" id="notificationsModal" aria-labelledby="notificationsTitle">
-        <form method="dialog">
-            <header class="modal-header">
-                <div>
-                    <p class="modal-eyebrow">Stay up to date</p>
-                    <h2 id="notificationsTitle">Notifications</h2>
-                </div>
-
-                <button
-                    class="icon-button"
-                    id="closeNotificationsButton"
-                    type="button"
-                    aria-label="Close notifications"
-                >
-                    ×
-                </button>
-            </header>
-
-            <div class="notification-list" id="notificationList">
-                <p class="search-empty-state">You are all caught up.</p>
-            </div>
-        </form>
-    </dialog>
-
-    <dialog class="modal call-modal" id="callModal" aria-labelledby="callTitle">
-        <form method="dialog" class="call-form">
-            <button
-                class="icon-button call-close-button"
-                id="closeCallButton"
-                type="button"
-                aria-label="Close call"
-            >
-                ×
-            </button>
-
-            <div class="call-content">
-                <div class="call-avatar-ring">
-                    <img
-                        id="callAvatar"
-                        src="{{ url_for('static', filename='default.png') }}"
-                        alt=""
-                    >
-                </div>
-
-                <p class="modal-eyebrow" id="callTypeLabel">Voice call</p>
-                <h2 id="callTitle">Connecting...</h2>
-                <p class="call-status" id="callStatus">Preparing a secure connection</p>
-
-                <video
-                    id="remoteVideo"
-                    class="remote-video hidden"
-                    autoplay
-                    playsinline
-                ></video>
-
-                <video
-                    id="localVideo"
-                    class="local-video hidden"
-                    autoplay
-                    muted
-                    playsinline
-                ></video>
-
-                <div class="call-controls">
-                    <button
-                        class="call-control"
-                        id="muteCallButton"
-                        type="button"
-                        aria-label="Mute microphone"
-                        title="Mute microphone"
-                    >
-                        <span aria-hidden="true">🎙</span>
-                    </button>
-
-                    <button
-                        class="call-control end-call-control"
-                        id="endCallButton"
-                        type="button"
-                        aria-label="End call"
-                        title="End call"
-                    >
-                        <span aria-hidden="true">☎</span>
-                    </button>
-
-                    <button
-                        class="call-control video-control"
-                        id="toggleCameraButton"
-                        type="button"
-                        aria-label="Toggle camera"
-                        title="Toggle camera"
-                    >
-                        <span aria-hidden="true">▣</span>
-                    </button>
-                </div>
-            </div>
-        </form>
-    </dialog>
-
-    <div class="toast-container" id="toastContainer" aria-live="polite" aria-atomic="true"></div>
-
-    <script>
-        window.CHOTTU = {
-            currentUser: {
-                id: {{ current_user.id|tojson }},
-                username: {{ current_user.username|tojson }},
-                avatar: {{ current_user.avatar|default('', true)|tojson }},
-                avatarUrl: {% if current_user.avatar %}{{ url_for('uploaded_file', filename=current_user.avatar)|tojson }}{% else %}{{ url_for('static', filename='default.png')|tojson }}{% endif %},
-                theme: {{ current_user.theme|tojson }}
-            },
-            endpoints: {
-                users: {{ url_for('get_users')|tojson }},
-                globalMessages: {{ url_for('get_global_messages')|tojson }},
-                privateMessagesPrefix: {{ url_for('get_private_messages', user_id=0)|replace('/0', '/')|tojson }},
-                userPrefix: {{ url_for('get_user', user_id=0)|replace('/0', '/')|tojson }},
-                upload: {{ url_for('upload_attachment')|tojson }},
-                profile: {{ url_for('update_profile')|tojson }},
-                messageSearch: {{ url_for('search_messages')|tojson }}
-            }
-        };
-    </script>
-    <script src="https://cdn.socket.io/4.8.1/socket.io.min.js"></script>
-    <script src="{{ url_for('static', filename='script.js') }}"></script>
+  <script>window.CHOTTU={{ {'user_id': current_user.id}|tojson }};</script>
+  <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+  <script src="{{ url_for('static',filename='script.js') }}"></script>
 </body>
 </html>
