@@ -1,1 +1,20 @@
+});
 
+socket.on("message", function(data){
+
+    const li=document.createElement("li");
+
+    li.className="other-message";
+
+    li.innerHTML=data;
+
+    messages.appendChild(li);
+
+    messages.scrollTop=messages.scrollHeight;
+
+});
+
+</script>
+
+</body>
+</html>
