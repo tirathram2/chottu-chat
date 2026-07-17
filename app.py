@@ -96,6 +96,7 @@ def init_database():
         online INTEGER DEFAULT 0,
 
         created_at TEXT
+        last_seen TEXT DEFAULT ''
 
     )
     """)
@@ -431,81 +432,6 @@ def api_users():
 # SOCKET.IO REAL-TIME CHAT
 # STEP 5
 # ======================================================
-
-@socketio.on("connect")
-def socket_connect():
-
-    if "user" not in session:
-        return False
-
-    username = session["user"]
-
-    conn = get_db()
-
-    cursor = conn.cursor()
-
-    cursor.execute(
-        "UPDATE users SET online=1 WHERE username=?",
-        (username,)
-    )
-
-    conn.commit()
-    conn.close()
-
-    join_room(username)
-
-    emit(
-        "user_online",
-        {
-            "username": username
-        },
-        broadcast=True
-    )
-
-
-@socketio.on("disconnect")
-def socket_disconnect():
-
-    if "user" not in session:
-        return
-
-    username = session["user"]
-
-    conn = get_db()
-
-    cursor = conn.cursor()
-
-    cursor.execute(
-        "UPDATE users SET online=0 WHERE username=?",
-        (username,)
-    )
-
-    conn.commit()
-    conn.close()
-
-    emit(
-        "user_offline",
-        {
-            "username": username
-        },
-        broadcast=True
-    )
-
-
-@socketio.on("typing")
-def typing(data):
-
-    receiver = data.get("receiver")
-
-    emit(
-        "typing",
-        {
-            "sender": session["user"]
-        },
-        room=receiver,
-        include_self=False
-    )
-
 
 @socketio.on("send_message")
 def send_message(data):
