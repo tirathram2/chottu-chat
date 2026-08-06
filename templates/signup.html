@@ -3,16 +3,15 @@
 <head>
 
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-
-<title>Sign Up • Chottu Chat</title>
-
-<link rel="stylesheet" href="/style.css">
+<title>Login • Chottu Chat</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 
 </head>
 
@@ -21,50 +20,56 @@
 <div class="login-card">
 
 <div class="logo">
-
 💬
-
 </div>
 
-<h1>Create Account</h1>
+<h1>Welcome Back</h1>
+
+<p class="subtitle">
+Login to continue chatting.
+</p>
+
 {% with messages = get_flashed_messages(with_categories=true) %}
-  {% if messages %}
-    {% for category, message in messages %}
-      <div style="color:red; margin:10px 0;">
-        {{ message }}
-      </div>
-    {% endfor %}
-  {% endif %}
+{% if messages %}
+{% for category, message in messages %}
+
+<div class="flash {{ category }}">
+{{ message }}
+</div>
+
+{% endfor %}
+{% endif %}
 {% endwith %}
-<form method="POST" action="{{ url_for('signup') }}">
+
+<form method="POST" action="{{ url_for('login') }}">
 
 <input
-id="username"
-name="username"
 type="text"
-placeholder="Username"
+name="identity"
+placeholder="Username or Email"
 required
+autocomplete="username"
 >
 
 <input
-id="email"
-name="email"
-type="email"
-placeholder="Email"
-required
->
-
-<input
-id="password"
-name="password"
 type="password"
+name="password"
 placeholder="Password"
 required
+autocomplete="current-password"
 >
+
+<label class="remember">
+
+<input type="checkbox" name="remember">
+
+Remember Me
+
+</label>
 
 <button type="submit">
 
-Create Account
+Login
 
 </button>
 
@@ -72,61 +77,17 @@ Create Account
 
 <div class="bottom-link">
 
-Already have an account?
+Don't have an account?
 
-<a href="{{ url_for('login') }}">
+<a href="{{ url_for('signup') }}">
 
-Login
+Create Account
 
 </a>
 
 </div>
 
 </div>
-
-<script>
-
-document.getElementById("signupForm").onsubmit=async(e)=>{
-
-e.preventDefault();
-
-const res=await fetch("/api/signup",{
-
-method:"POST",
-
-headers:{
-
-"Content-Type":"application/json"
-
-},
-
-body:JSON.stringify({
-
-name:document.getElementById("name").value,
-
-email:document.getElementById("email").value,
-
-password:document.getElementById("password").value
-
-})
-
-});
-
-const data=await res.json();
-
-if(res.ok){
-
-location.href="/index.html";
-
-}else{
-
-alert(data.error);
-
-}
-
-}
-
-</script>
 
 </body>
 
