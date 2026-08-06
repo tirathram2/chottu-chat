@@ -5,7 +5,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Login • Chottu Chat</title>
+<title>Create Account • Chottu Chat</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 
@@ -23,10 +23,10 @@
 💬
 </div>
 
-<h1>Welcome Back</h1>
+<h1>Create Account</h1>
 
 <p class="subtitle">
-Login to continue chatting.
+Create your Chottu Chat account.
 </p>
 
 {% with messages = get_flashed_messages(with_categories=true) %}
@@ -41,14 +41,22 @@ Login to continue chatting.
 {% endif %}
 {% endwith %}
 
-<form method="POST" action="{{ url_for('login') }}">
+<form method="POST" action="{{ url_for('signup') }}">
 
 <input
 type="text"
-name="identity"
-placeholder="Username or Email"
+name="username"
+placeholder="Username"
 required
 autocomplete="username"
+>
+
+<input
+type="email"
+name="email"
+placeholder="Email Address"
+required
+autocomplete="email"
 >
 
 <input
@@ -56,32 +64,30 @@ type="password"
 name="password"
 placeholder="Password"
 required
-autocomplete="current-password"
+autocomplete="new-password"
 >
 
-<label class="remember">
-
-<input type="checkbox" name="remember">
-
-Remember Me
-
-</label>
+<input
+type="password"
+name="confirm_password"
+placeholder="Confirm Password"
+required
+autocomplete="new-password"
+>
 
 <button type="submit">
-
-Login
-
+Create Account
 </button>
 
 </form>
 
 <div class="bottom-link">
 
-Don't have an account?
+Already have an account?
 
-<a href="{{ url_for('signup') }}">
+<a href="{{ url_for('login') }}">
 
-Create Account
+Login
 
 </a>
 
@@ -90,5 +96,4 @@ Create Account
 </div>
 
 </body>
-
 </html>
