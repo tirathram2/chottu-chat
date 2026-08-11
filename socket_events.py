@@ -8,7 +8,15 @@ from database import get_db
 from upload import valid_attachment_path
 from utils import message_json, utc_now
 socketio = SocketIO(); _user_sids = defaultdict(set)
-def init_socketio(app): socketio.init_app(app, cors_allowed_origins=app.config["CORS_ORIGINS"], async_mode=app.config["SOCKETIO_ASYNC_MODE"])
+def init_socketio(app):
+    socketio.init_app(
+        app,
+        cors_allowed_origins=app.config["CORS_ORIGINS"],
+        async_mode=app.config["SOCKETIO_ASYNC_MODE"],
+        transports=app.config["SOCKETIO_TRANSPORTS"],
+        ping_interval=25,
+        ping_timeout=60,
+    )
 def is_online(user_id): return bool(_user_sids.get(str(user_id)))
 def _recipient(value):
     if value in (None, "", "global"): return None

@@ -19,10 +19,10 @@ Open `http://127.0.0.1:5000`, create two accounts, and use two browser windows t
 ## Production / Render
 
 - Build command: `pip install -r requirements.txt`
-- Start command: `gunicorn --worker-class eventlet -w 1 app:app`
+- Start command: `gunicorn --bind 0.0.0.0:$PORT --worker-class gthread --workers 1 --threads 100 app:app`
 - Required environment variable: `SECRET_KEY` (a long random value)
 
-Optional environment variables: `DATABASE_PATH`, `MAX_UPLOAD_BYTES`, `CORS_ORIGINS`, `SOCKETIO_ASYNC_MODE`, and `FLASK_DEBUG`. For persistent Render data, mount a disk and set `DATABASE_PATH` on that disk. SQLite is appropriate for one instance; use managed storage/database services before scaling horizontally.
+Optional environment variables: `DATABASE_PATH`, `MAX_UPLOAD_BYTES`, `CORS_ORIGINS`, `SOCKETIO_ASYNC_MODE`, and `FLASK_DEBUG`. `SOCKETIO_ASYNC_MODE` defaults to `threading`; do not set it to `eventlet`. For persistent Render data, mount a disk and set `DATABASE_PATH` on that disk. SQLite is appropriate for one instance; use managed storage/database services before scaling horizontally.
 
 ## Structure
 

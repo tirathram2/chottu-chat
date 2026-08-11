@@ -1,4 +1,9 @@
-const $=s=>document.querySelector(s), app=$('#app'), socket=io(), state={me:null,active:null,users:[],tab:'chats',typingTimer:null,chatLoadToken:0,renderedMessageIds:new Set};
+const $=s=>document.querySelector(s), app=$('#app'), socket=io({
+  // Render supports WebSockets; keep polling as an Engine.IO fallback.
+  transports:['websocket','polling'],
+  upgrade:true,
+  timeout:20000
+}), state={me:null,active:null,users:[],tab:'chats',typingTimer:null,chatLoadToken:0,renderedMessageIds:new Set};
 const esc=s=>String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); const time=s=>new Date(s).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
 async function api(url,opt){const r=await fetch(url,opt);const d=await r.json();if(!r.ok)throw Error(d.error);return d}
 function avatar(u){return u.avatar||'/static/default.png'} function renderList(){let list=$('#conversationList'); let items=[{id:null,username:'Global Chat',avatar:'/static/logo.png',bio:'Everyone is here',online:true}].concat(state.users);list.innerHTML=items.map(u=>`<article class="conversation ${state.active&&state.active.id===u.id?'active':''}" data-id="${u.id===null?'global':u.id}"><span class="status-dot" ${u.online?'':'style="display:none"'}></span><img src="${avatar(u)}"><div class="info"><strong>${esc(u.username)}</strong><p>${esc(u.bio||'Start a conversation')}</p></div></article>`).join('');list.querySelectorAll('.conversation').forEach(x=>x.onclick=()=>openChat(x.dataset.id==='global'?null:+x.dataset.id));}
