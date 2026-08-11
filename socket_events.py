@@ -1,5 +1,6 @@
 """Socket.IO presence, messaging, typing, and WebRTC signal relay."""
 from collections import defaultdict
+import sqlite3
 from flask import request
 from flask_login import current_user
 from flask_socketio import SocketIO, emit, join_room
@@ -51,10 +52,15 @@ def send_message(data):
     try:
         cursor = connection.execute("INSERT INTO messages (sender_id, recipient_id, body, attachment, attachment_type, created_at) VALUES (?, ?, ?, ?, ?, ?)", (current_user.id,recipient_id,body,attachment,attachment_type,utc_now())); connection.commit()
         row = connection.execute("SELECT m.*, u.username sender_name, u.avatar sender_avatar FROM messages m JOIN users u ON u.id = m.sender_id WHERE m.id = ?", (cursor.lastrowid,)).fetchone()
+    except sqlite3.Error:
+        connection.rollback()
+        emit("message_error", {"error":"Message could not be saved."})
+        return {"ok": False, "error": "Message could not be saved."}
     finally: connection.close()
-    message, room = message_json(row), ("global" if recipient_id is None else f"user:{recipient_id}")
-    emit("new_message", message, to=room)
+    message = message_json(row)
+    emit("new_message", message, to="global" if recipient_id is None else f"user:{recipient_id}")
     if recipient_id is not None: emit("new_message", message, to=f"user:{current_user.id}")
+    return {"ok": True, "message": message}
 @socketio.on("mark_seen")
 def mark_seen(data):
     peer_id = _recipient((data or {}).get("peer_id"))
