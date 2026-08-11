@@ -1,6 +1,6 @@
 """Application factory and production entry point for Chottu Chat."""
 import os
-from flask import Flask, jsonify, render_template
+from flask import Flask, jsonify, render_template, send_from_directory
 from auth import auth_bp, login_manager
 from config import Config
 from database import init_db
@@ -18,6 +18,12 @@ def create_app(config_object=Config):
     app.register_blueprint(routes_bp)
     init_socketio(app)
     @app.errorhandler(404)
+     @app.route("/google63240b67ab9e0b5e.html")
+    def google_verification():
+        return send_from_directory(
+            app.root_path,
+            "google63240b67ab9e0b5e.html"
+        )
     def not_found(_error):
         if app.config.get("TESTING") or app.config.get("DEBUG"):
             return jsonify(error="Not found."), 404
