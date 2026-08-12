@@ -17,13 +17,13 @@ def create_app(config_object=Config):
     app.register_blueprint(auth_bp)
     app.register_blueprint(routes_bp)
     init_socketio(app)
-    @app.errorhandler(404)
      @app.route("/google63240b67ab9e0b5e.html")
     def google_verification():
         return send_from_directory(
             app.root_path,
             "google63240b67ab9e0b5e.html"
         )
+     @app.errorhandler(404)    
     def not_found(_error):
         if app.config.get("TESTING") or app.config.get("DEBUG"):
             return jsonify(error="Not found."), 404
