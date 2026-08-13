@@ -26,6 +26,15 @@ def create_app(config_object=Config):
 
     init_socketio(app)
 
+    @app.route("/robots.txt")
+    def robots_txt():
+        return (
+            "User-agent: *\n"
+            "Allow: /\n",
+            200,
+            {"Content-Type": "text/plain; charset=utf-8"},
+        )
+
     @app.route("/google63240b67ab9e0b5e.html")
     def google_verification():
         return send_from_directory(
